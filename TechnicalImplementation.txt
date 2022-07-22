@@ -1,0 +1,8 @@
+How to implement system :
+
+1. copy to htdocs file on xampp.
+2. add database to phpmyadmin, database in the folder Database on project.
+3. Change the configuration base on your computer (if using 8080 or no) in url.
+4. Login to system :
+username : administrator
+password : password0722
