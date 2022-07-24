@@ -29,10 +29,9 @@
                 "className": "center"
             }]
         });
-    });
 
-    // Program Study
-    $(document).ready(function() {
+
+        // Program Study
         table = $('#programStudy').DataTable({
             "processing": true,
             "serverSide": true,
@@ -57,10 +56,8 @@
                 "className": "center"
             }]
         });
-    });
 
-    // Dosen Program Study
-    $(document).ready(function() {
+        // Dosen Program Study
         table = $('#programStudyLecturer').DataTable({
             "processing": true,
             "serverSide": true,
@@ -324,8 +321,6 @@
                     </li>
                     <li role="presentation" class=""><a href="#tab_content22" role="tab" id="profile-tabb" data-toggle="tab" aria-controls="profile" aria-expanded="false">Program Study</a>
                     </li>
-                    <li role="presentation" class=""><a href="#tab_content33" role="tab" id="profile-tabb3" data-toggle="tab" aria-controls="profile" aria-expanded="false">Dosen Program Study</a>
-                    </li>
                 </ul>
                 <div class="clearfix"></div>
             </div>
@@ -335,98 +330,33 @@
 
                     <div id="myTabContent2" class="tab-content">
                         <div role="tabpanel" class="tab-pane fade active in" id="tab_content11" aria-labelledby="home-tab">
-                            <div class="x_panel">
-                                <div class="x_title">
-                                    <h2>Penjadwalan Asesmen</h2>
-                                    <ul class="nav navbar-right panel_toolbox">
-                                        <li>
-                                            <button class="btn btn-success btn-xs" onclick="add()" type="button"><i class="fa fa-plus"></i> Add Data</button>
-                                        </li>
-                                    </ul>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="x_content">
-
-                                    <table id="assessment_schedule" class="table table-striped table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Program Study</th>
-                                                <th>Periode</th>
-                                                <th>Mulai</th>
-                                                <th>Selesai</th>
-                                                <th>Tim</th>
-                                                <th>Tools</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
+                            <div class="x_title">
+                                <h2>Penjadwalan Asesmen</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li>
+                                        <button class="btn btn-success btn-xs" onclick="add()" type="button"><i class="fa fa-plus"></i> Add Data</button>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
                             </div>
-                            <!-- Modal penjadwalan asesment -->
-                            <div class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-md" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            <h5 class="modal-title" id="modal-title"></h5>
-                                        </div>
-                                        <form class="form-horizontal" id="add-form" action="" method="POST">
-                                            <div class="modal-body">
-                                                <div class="item form-group">
-                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12 form-group">Pilih Program Study <span class="required">*</span>
-                                                    </label>
-                                                    <div class="col-md-5 col-sm-5 col-xs-12 form-group">
-                                                        <input id="full_name" class="form-control col-md-3 col-xs-12" name="full_name" placeholder="Full Name" required="required" type="text">
-                                                    </div>
-                                                    <div class="col-md-5 col-sm-5 col-xs-12 form-group">
-                                                        <input id="nick_name" class="form-control col-md-3 col-xs-12" name="nick_name" placeholder="Nick Name" required="required" type="text">
-                                                    </div>
-                                                </div>
-                                                <div class="item form-group">
-                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12 form-group">Initial/NIP <span class="required">*</span>
-                                                    </label>
-                                                    <div class="col-md-5 col-sm-5 col-xs-12 form-group">
-                                                        <input type="text" id="initial" name="initial" required="required" placeholder="Initial" class="form-control col-md-3 col-xs-12 ">
-                                                    </div>
-                                                    <div class="col-md-5 col-sm-5 col-xs-12 form-group">
-                                                        <input type="text" id="NIP" name="NIP" required="required" placeholder="NIP" class="form-control col-md-3 col-xs-12">
-                                                    </div>
-                                                </div>
-                                                <div class="item form-group">
-                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12">Email <span class="required">*</span>
-                                                    </label>
-                                                    <div class="col-md-10 col-sm-10 col-xs-12">
-                                                        <input type="email" id="email" name="email" data-validate-linked="email" placeholder="Email" required="required" class="form-control col-md-7 col-xs-12">
-                                                    </div>
-                                                </div>
-                                                <div class="item form-group">
-                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12">Address <span class="required">*</span>
-                                                    </label>
-                                                    <div class="col-md-10 col-sm-10 col-xs-12">
-                                                        <input type="text" id="address" name="address" required="required" placeholder="Address" data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
-                                                    </div>
-                                                </div>
-                                                <div class="item form-group">
-                                                    <label class="control-label col-md-2 col-sm-2 col-xs-12">Phone <span class="required">*</span>
-                                                    </label>
-                                                    <div class="col-md-10 col-sm-10 col-xs-12">
-                                                        <input type="text" id="phone_number" name="phone_number" required="required" placeholder="Phone Number" class="form-control col-md-7 col-xs-12">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary" onclick="save()">Save changes</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
+                            <div class="x_content">
+                                <table id="assessment_schedule" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Program Study</th>
+                                            <th>Periode</th>
+                                            <th>Mulai</th>
+                                            <th>Selesai</th>
+                                            <th>Tim</th>
+                                            <th>Tools</th>
+                                        </tr>
+                                    </thead>
+                                </table>
                             </div>
                         </div>
-                        <div role="tabpanel" class="tab-pane fade" id="tab_content22" aria-labelledby="profile-tab">
-                            <div class="x_panel">
+                        <div role="tabpanel" class="fade" id="tab_content22" aria-labelledby="home-tab">
+                            <div class="row">
                                 <div class="x_title">
                                     <h2>Program Study</h2>
                                     <ul class="nav navbar-right panel_toolbox">
@@ -437,7 +367,6 @@
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
-
                                     <table id="programStudy" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
@@ -453,11 +382,10 @@
                                     </table>
                                 </div>
                             </div>
-                        </div>
-                        <div role="tabpanel" class="tab-pane fade" id="tab_content33" aria-labelledby="profile-tab">
-                            <div class="x_panel">
+                            <div class="clearfix"></div>
+                            <div class="row">
                                 <div class="x_title">
-                                    <h2>Penjadwalan Asesmen</h2>
+                                    <h2>Dosen Program Study</h2>
                                     <ul class="nav navbar-right panel_toolbox">
                                         <li>
                                             <button class="btn btn-success btn-xs" onclick="add()" type="button"><i class="fa fa-plus"></i> Add Data</button>
@@ -466,8 +394,7 @@
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
-
-                                    <table id="userManagementTable" class="table table-striped table-bordered">
+                                    <table id="programStudyLecturer" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
@@ -485,6 +412,9 @@
                                     </table>
                                 </div>
                             </div>
+                        </div>
+                        <div role="tabpanel" class="fade" id="tab_lecturer" aria-labelledby="profile-tab">
+
                         </div>
                     </div>
                 </div>

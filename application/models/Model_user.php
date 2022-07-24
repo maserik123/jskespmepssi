@@ -42,6 +42,15 @@ class Model_user extends CI_Model
         $this->db->where('userid', $id);
         $this->db->delete('user');
     }
+
+    function cek_user_pwd($username, $password)
+    {
+        $this->db->select('*');
+        $this->db->from('user');
+        $this->db->where('username like binary', $username);
+        $this->db->where('password like binary', $password);
+        return $this->db->get()->result();
+    }
 }
 
 /* End of file Model_user.php */

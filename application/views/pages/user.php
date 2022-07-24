@@ -362,11 +362,9 @@
             <div class="x_content">
                 <div class="" role="tabpanel" data-example-id="togglable-tabs">
                     <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#tab_content1" id="user-tab" role="tab" data-toggle="tab" aria-expanded="true">User Management</a>
+                        <li role="presentation" class="active"><a href="#tab_content1" id="user-tab" role="tab" data-toggle="tab" aria-expanded="true">User Login</a>
                         </li>
-                        <li role="presentation" class=""><a href="#tab_content2" role="tab" id="user-role-tab" data-toggle="tab" aria-expanded="false">User Role</a>
-                        </li>
-                        <li role="presentation" class=""><a href="#tab_content3" role="tab" id="user-login-tab" data-toggle="tab" aria-expanded="false">User Login</a>
+                        <li role="presentation" class=""><a href="#tab_content2" role="tab" id="user-role-tab" data-toggle="tab" aria-expanded="false">User Management</a>
                         </li>
                     </ul>
                     <div id="myTabContent" class="tab-content">
@@ -404,31 +402,60 @@
                             </div>
                         </div>
                         <!-- Bagian TAB User Role -->
-                        <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
-                            <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
-                                <div class="x_panel">
-                                    <div class="x_title">
-                                        <h2>Users <small>Role</small></h2>
-                                        <ul class="nav navbar-right panel_toolbox">
-                                            <li>
-                                                <button class="btn btn-success btn-xs" onclick="addUserRole()" type="button"><i class="fa fa-plus"></i> Add Data</button>
-                                            </li>
-                                        </ul>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="x_content">
+                        <div role="tabpanel" class="fade" id="tab_content2" aria-labelledby="profile-tab">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Users <small>Managements</small></h2>
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li>
+                                            <button class="btn btn-success btn-xs" onclick="add()" type="button"><i class="fa fa-plus"></i> Add Data</button>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
 
-                                        <table id="userRoleTable" class="table table-striped table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Role</th>
-                                                    <th>Description</th>
-                                                    <th>Tools</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
+                                    <table id="userManagementTable" class="table table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Full Name</th>
+                                                <th>Nick Name</th>
+                                                <th>Initial</th>
+                                                <th>NIP</th>
+                                                <th>Email</th>
+                                                <th>Address</th>
+                                                <th>Phone Number</th>
+                                                <th>Picture</th>
+                                                <th>Tools</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Users <small>Role</small></h2>
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li>
+                                            <button class="btn btn-success btn-xs" onclick="addUserRole()" type="button"><i class="fa fa-plus"></i> Add Data</button>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+
+                                    <table id="userRoleTable" class="table table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Role</th>
+                                                <th>Description</th>
+                                                <th>Tools</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 </div>
                             </div>
                         </div>

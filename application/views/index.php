@@ -10,6 +10,11 @@
 
     <title>Gentelella Alela! | </title>
     <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css">
+
     <script src="<?php echo base_url('assets/') ?>vendors/jquery/dist/jquery.min.js"></script>
     <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-s1.11.3.min.js"></script> -->
     <script src="<?php echo base_url('assets/') ?>vendors/jquery/dist/jquery.min.js"></script>

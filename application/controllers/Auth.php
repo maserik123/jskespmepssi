@@ -8,7 +8,7 @@ class Auth extends CI_Controller
         parent::__construct();
         // Load google oauth library
         // $this->load->library('google');
-        $this->load->model('User');
+        $this->load->model('Model_user');
         $this->load->helper('notif&log');
         $this->load->helper('my_function');
         // Load user model
