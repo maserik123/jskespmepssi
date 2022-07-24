@@ -1,12 +1,14 @@
 <?php
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Model_prodi extends CI_Model
+class Model_prodi_lecturer extends CI_Model
 {
+
     function getData()
     {
         $this->db->select('*');
-        $this->db->from('program_study');
+        $this->db->from('program_study_lecturer');
         $this->db->get();
         return $this->db->result();
     }
@@ -52,5 +54,4 @@ class Model_prodi extends CI_Model
     }
 }
 
-
-/* End of file Model_prodi.php */
+/* End of file Model_prodi_lecturer.php */

@@ -59,6 +59,34 @@
         });
     });
 
+    // Dosen Program Study
+    $(document).ready(function() {
+        table = $('#programStudyLecturer').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            "responsive": false,
+            "dataType": 'JSON',
+            "ajax": {
+                "url": "<?php echo site_url('administrator/assessment/getDataProdi') ?>",
+                "type": "POST",
+                "data": {
+                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                }
+            },
+            "order": [
+                [0, "desc"]
+            ],
+            "columnDefs": [{
+                "targets": [0],
+                "className": "center"
+            }]
+        });
+    });
+
     var save_method;
 
     function add() {
@@ -400,7 +428,7 @@
                         <div role="tabpanel" class="tab-pane fade" id="tab_content22" aria-labelledby="profile-tab">
                             <div class="x_panel">
                                 <div class="x_title">
-                                    <h2>Penjadwalan Asesmen</h2>
+                                    <h2>Program Study</h2>
                                     <ul class="nav navbar-right panel_toolbox">
                                         <li>
                                             <button class="btn btn-success btn-xs" onclick="add()" type="button"><i class="fa fa-plus"></i> Add Data</button>
@@ -410,7 +438,7 @@
                                 </div>
                                 <div class="x_content">
 
-                                    <table id="userManagementTable" class="table table-striped table-bordered">
+                                    <table id="programStudy" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>#</th>

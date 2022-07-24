@@ -253,15 +253,31 @@ class Administrator extends CI_Controller
             foreach ($dt['data'] as $row) {
                 $enc_id     = encrypt($row->assessment_schedule_id);
                 $th1    = '<div class="text-center">' . ++$start . '</div>';
-                $th2    = '<div class="text-left">' . $row->title_prodi . '</div>';
-                $th3    = '<div class="text-center">' . $row->accreditation_prodi . '</div>';
-                $th4    = '<div class="text-center">' . $row->year_prodi . '</div>';
-                $th5    = '<div class="text-center">' . $row->period . '</div>';
-                $th6    = '<div class="text-center">' . $row->start . '</div>';
-                $th7    = '<div class="text-center">' . $row->end . '</div>';
-                $th8    = '<div class="text-center">' . $row->team . '</div>';
-                $th9   = '<div class="text-center" style="width:100px;">' . (get_btn_group('underMaintenance()', 'underMaintenance()', 'underMaintenance()')) . '</div>';
-                $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7, $th8, $th9));
+                $th2    = '<div class="text-left">' . $row->title . '</div>';
+                $th3    = '<div class="text-center">' . $row->abbreviation . '</div>';
+                $th4    = '<div class="text-center">' . $row->accreditation . '</div>';
+                $th5    = '<div class="text-center">' . $row->year . '</div>';
+                $th6    = '<div class="text-center">' . $row->kaprodi_name . '</div>';
+                $th7   = '<div class="text-center" style="width:100px;">' . (get_btn_group('underMaintenance()', 'underMaintenance()', 'underMaintenance()')) . '</div>';
+                $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7));
+            }
+            $dt['data'] = $data;
+            echo json_encode($dt);
+            die;
+        } else if ($param == 'getDataProdiLecturer') {
+            $dt = $this->Model_assessment->getAllData();
+            $start = $this->input->post('start');
+            $data = array();
+            foreach ($dt['data'] as $row) {
+                $enc_id     = encrypt($row->assessment_schedule_id);
+                $th1    = '<div class="text-center">' . ++$start . '</div>';
+                $th2    = '<div class="text-left">' . $row->title . '</div>';
+                $th3    = '<div class="text-center">' . $row->abbreviation . '</div>';
+                $th4    = '<div class="text-center">' . $row->accreditation . '</div>';
+                $th5    = '<div class="text-center">' . $row->year . '</div>';
+                $th6    = '<div class="text-center">' . $row->kaprodi_name . '</div>';
+                $th7   = '<div class="text-center" style="width:100px;">' . (get_btn_group('underMaintenance()', 'underMaintenance()', 'underMaintenance()')) . '</div>';
+                $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7));
             }
             $dt['data'] = $data;
             echo json_encode($dt);
