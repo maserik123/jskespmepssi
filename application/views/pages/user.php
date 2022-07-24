@@ -395,6 +395,7 @@
                                                 <th>Email</th>
                                                 <th>Address</th>
                                                 <th>Phone Number</th>
+                                                <th>Picture</th>
                                                 <th>Tools</th>
                                             </tr>
                                         </thead>

@@ -5,7 +5,7 @@
         </li>
         <h3>Operation</h3>
         <?php foreach ($listMenu as $row) { ?>
-            <li><a href='#<?php echo $row->menu_link; ?>' onclick="menu('<?php echo $row->menu_link; ?>')"><i class="fa <?php echo $row->script; ?>"></i> <?php echo $row->menu_title; ?> </a>
+            <li><a href='#<?php echo $row->controller_name; ?>' onclick="menu('<?php echo $row->controller_name; ?>')"><i class="fa <?php echo $row->script; ?>"></i> <?php echo $row->menu_title; ?> </a>
             </li>
         <?php } ?>
     </ul>
