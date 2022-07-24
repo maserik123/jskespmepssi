@@ -33,10 +33,10 @@ class Auth extends CI_Controller
 
             $user = $username;
             $pass = md5($password);
-            $cek = $this->User->cek_user_pwd($user, $pass);
+            $cek = $this->Model_user_login->cek_user_pwd($user, $pass);
             if ($cek->num_rows() != 0) {
                 foreach ($cek->result() as $qad) {
-                    $sess_data['id']              = $qad->id;
+                    $sess_data['id']              = $qad->user_login_id;
                     $sess_data['first_name']      = $qad->first_name;
                     $sess_data['last_name']       = $qad->last_name;
                     $sess_data['username']        = $qad->username;
@@ -45,13 +45,12 @@ class Auth extends CI_Controller
                     $sess_data['role']            = $qad->role;
                     $sess_data['online_status']   = $qad->online_status;
                     $sess_data['block_status']    = $qad->block_status;
-                    $sess_data['id_unit']         = $qad->id_unit;
                     $this->session->set_userdata($sess_data);
                 }
                 if ($sess_data['block_status'] != 1) {
                     $this->session->set_userdata('loggedIn', TRUE);
-                    $this->session->set_flashdata('success', 'Selamat datang ' . $sess_data['first_name'] . ' ! <br> Anda telah login ke KBP Manajemen Dashboard');
-                    $this->User->change_on_off($sess_data['id'], online_status('online'));
+                    $this->session->set_flashdata('success', 'Selamat datang ' . $sess_data['first_name'] . ' ! <br> Anda telah login ke SPME');
+                    $this->Model_user->change_on_off($sess_data['id'], online_status('online'));
                     // $this->B_notif_model->insert_notif(notifLog('Login', 'Selamat Datang ' . $sess_data['first_name'] . ' ' . $sess_data['last_name'] . ' !', 'Login', $sess_data['id']));
                     // $this->B_user_log_model->addLog(userLog('Login System',  $sess_data['first_name'] . ' ' . $sess_data['last_name'] . ' Login ke System', $sess_data['id']));
                     redirect(base_url('Administrator'));

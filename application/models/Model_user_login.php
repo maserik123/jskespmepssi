@@ -14,6 +14,7 @@ class Model_user_login extends CI_Model
     function getAllData()
     {
         $this->datatables->select('
+        a.user_login_id,
         b.full_name,
         b.nick_name,
         b.initial,
@@ -22,11 +23,8 @@ class Model_user_login extends CI_Model
         b.address,
         b.phone_number,
         a.username,
-        a.password,
-        a.link,
         c.role,
         a.block_status,
-        a.access_status,
         a.create_date');
         $this->datatables->from('user_login a');
         $this->datatables->join('user b', 'b.userid = a.userid', 'left');
@@ -57,6 +55,35 @@ class Model_user_login extends CI_Model
     {
         $this->db->where('user_login_id', $id);
         $this->db->delete('user_login');
+    }
+
+    function cek_user_pwd($username, $password)
+    {
+        $this->db->select('a.user_login_id,
+        b.full_name,
+        b.nick_name,
+        b.initial,
+        b.NIP,
+        b.email,
+        b.address,
+        b.phone_number,
+        a.username,
+        a.block_status,
+        a.access_status
+        ');
+        $this->db->from('user_login a');
+        $this->db->join('user b', 'b.userid = a.userid', 'left');
+        $this->db->join('user_role c', 'c.user_role_id = a.user_role_id', 'left');
+        $this->db->where('username like binary', $username);
+        $this->db->where('password like binary', $password);
+        return $this->db->get()->result();
+    }
+
+    function change_on_off($id, $data)
+    {
+        $this->db->where('user_login_id', $id);
+        $this->db->update('user_login', $data);
+        return $this->db->affected_rows();
     }
 }
 

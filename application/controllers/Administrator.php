@@ -104,6 +104,62 @@ class Administrator extends CI_Controller
         }
     }
 
+    function userLogin($param = '', $id = '')
+    {
+        if (empty($param)) {
+        } else if ($param == 'getAllData') {
+            $dt = $this->Model_user_login->getAllData();
+            $start = $this->input->post('start');
+            $data = array();
+            foreach ($dt['data'] as $row) {
+                $enc_id     = encrypt($row->user_login_id);
+                $th1    = '<div class="text-center">' . ++$start . '</div>';
+                $th2    = '<div class="text-left">' . $row->full_name . '</div>';
+                $th3    = '<div class="text-center">' . $row->nick_name . '</div>';
+                $th4    = '<div class="text-center">' . $row->initial . '</div>';
+                $th5    = '<div class="text-center">' . $row->NIP . '</div>';
+                $th6    = '<div class="text-center">' . $row->email . '</div>';
+                $th7    = '<div class="text-center">' . $row->address . '</div>';
+                $th8    = '<div class="text-center">' . $row->phone_number . '</div>';
+                $th9    = '<div class="text-center">' . $row->username . '</div>';
+                $th10    = '<div class="text-center">' . $row->role . '</div>';
+                $th11    = '<div class="text-center">' . $row->block_status . '</div>';
+                $th12   = '<div class="text-center" style="width:100px;">' . (get_btn_group('underMaintenance()', 'underMaintenance()', 'underMaintenance()')) . '</div>';
+                $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7, $th8, $th9, $th10, $th11, $th12));
+            }
+            $dt['data'] = $data;
+            echo json_encode($dt);
+            die;
+        } else if ($param == 'insert') {
+            $this->form_validation->set_rules("role", "Role", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("description", "Description", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+
+            $this->form_validation->set_error_delimiters('<h6 id="text-error" class="help-block help-block-error">* ', '</h6>');
+            if ($this->form_validation->run() == FALSE) {
+                $result = array('status' => 'error', 'msg' => 'Data is not right, please check again.');
+                foreach ($_POST as $key => $value) {
+                    $result['messages'][$key] = form_error($key);
+                }
+            } else {
+                $data = array(
+                    'role'                => htmlspecialchars($this->input->post('role')),
+                    'description'                => htmlspecialchars($this->input->post('description')),
+
+                );
+                $result['messages'] = '';
+                $result = array('status' => 'success', 'msg' => 'Data Inserted!');
+                $this->Model_user_role->addData($data);
+                // $this->B_user_log_model->addLog(userLog('Add Data', $this->session->userdata('first_name') . ' Add data Tracer Study Program Study', $this->session->userdata('id')));
+            }
+
+            $csrf = array(
+                'token' => $this->security->get_csrf_hash()
+            );
+            echo json_encode(array('result' => $result, 'csrf' => $csrf));
+            die;
+        }
+    }
+
     function userRole($param = '', $id = '')
     {
         if (empty($param)) {

@@ -4,6 +4,32 @@
     }
 
     $(document).ready(function() {
+        table = $('#userLogin').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            "responsive": false,
+            "dataType": 'JSON',
+            "ajax": {
+                "url": "<?php echo site_url('administrator/userLogin/getAllData') ?>",
+                "type": "POST",
+                "data": {
+                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                }
+            },
+            "order": [
+                [0, "desc"]
+            ],
+            "columnDefs": [{
+                "targets": [0],
+                "className": "center"
+            }]
+        });
+    });
+    $(document).ready(function() {
         table = $('#userManagementTable').DataTable({
             "processing": true,
             "serverSide": true,
@@ -372,7 +398,7 @@
                         <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
                             <div class="x_panel">
                                 <div class="x_title">
-                                    <h2>Users <small>Managements</small></h2>
+                                    <h2>User <small>Login</small></h2>
                                     <ul class="nav navbar-right panel_toolbox">
                                         <li>
                                             <button class="btn btn-success btn-xs" onclick="add()" type="button"><i class="fa fa-plus"></i> Add Data</button>
@@ -382,7 +408,7 @@
                                 </div>
                                 <div class="x_content">
 
-                                    <table id="userManagementTable" class="table table-striped table-bordered">
+                                    <table id="userLogin" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
@@ -393,7 +419,9 @@
                                                 <th>Email</th>
                                                 <th>Address</th>
                                                 <th>Phone Number</th>
-                                                <th>Picture</th>
+                                                <th>Username</th>
+                                                <th>Role</th>
+                                                <th>Block Status</th>
                                                 <th>Tools</th>
                                             </tr>
                                         </thead>
@@ -456,40 +484,6 @@
                                             </tr>
                                         </thead>
                                     </table>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Bagian TAB User Login -->
-                        <div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="profile-tab">
-                            <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
-                                <div class="x_panel">
-                                    <div class="x_title">
-                                        <h2>Users <small>Login</small></h2>
-                                        <ul class="nav navbar-right panel_toolbox">
-                                            <li>
-                                                <button class="btn btn-success btn-xs" onclick="add()" type="button"><i class="fa fa-plus"></i> Add Data</button>
-                                            </li>
-                                        </ul>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="x_content">
-
-                                        <table id="mydata" class="table table-striped table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Full Name</th>
-                                                    <th>Nick Name</th>
-                                                    <th>Initial</th>
-                                                    <th>NIP</th>
-                                                    <th>Email</th>
-                                                    <th>Address</th>
-                                                    <th>Phone Number</th>
-                                                    <th>Tools</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
                                 </div>
                             </div>
                         </div>
