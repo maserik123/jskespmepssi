@@ -37,8 +37,8 @@ class Auth extends CI_Controller
             if ($cek->num_rows() != 0) {
                 foreach ($cek->result() as $qad) {
                     $sess_data['id']              = $qad->user_login_id;
-                    $sess_data['first_name']      = $qad->first_name;
-                    $sess_data['last_name']       = $qad->last_name;
+                    $sess_data['full_name']      = $qad->full_name;
+                    $sess_data['nick_name']       = $qad->nick_name;
                     $sess_data['username']        = $qad->username;
                     $sess_data['email']           = $qad->email;
                     $sess_data['picture']         = $qad->picture;
@@ -49,11 +49,11 @@ class Auth extends CI_Controller
                 }
                 if ($sess_data['block_status'] != 1) {
                     $this->session->set_userdata('loggedIn', TRUE);
-                    $this->session->set_flashdata('success', 'Selamat datang ' . $sess_data['first_name'] . ' ! <br> Anda telah login ke SPME');
-                    $this->Model_user->change_on_off($sess_data['id'], online_status('online'));
+                    $this->session->set_flashdata('success', 'Selamat datang ' . $sess_data['nick_name'] . ' ! <br> Anda telah login ke SPME');
+                    $this->Model_user_login->change_on_off($sess_data['id'], online_status('online'));
                     // $this->B_notif_model->insert_notif(notifLog('Login', 'Selamat Datang ' . $sess_data['first_name'] . ' ' . $sess_data['last_name'] . ' !', 'Login', $sess_data['id']));
                     // $this->B_user_log_model->addLog(userLog('Login System',  $sess_data['first_name'] . ' ' . $sess_data['last_name'] . ' Login ke System', $sess_data['id']));
-                    redirect(base_url('Administrator'));
+                    redirect('administrator', 'refresh');
                 } else {
                     $this->session->set_flashdata('result_login', 'This user has blocked, you can not login ! ');
                     redirect('auth/');
@@ -87,7 +87,7 @@ class Auth extends CI_Controller
         $this->session->sess_destroy();
         $user_id = $this->session->userdata('id');
         // $this->B_user_log_model->addLog(userLog('Logout System',  $this->session->userdata('first_name') . ' ' . $this->session->userdata('last_name') . ' Logout dari System', $this->session->userdata('id')));
-        $this->User->change_on_off($user_id, online_status('offline'));
+        $this->Model_user_login->change_on_off($user_id, online_status('offline'));
         // Redirect to login page
         echo json_encode(array("status" => 'success', 'msg' => 'Thanks for using this system !'));
     }
@@ -102,7 +102,7 @@ class Auth extends CI_Controller
         $this->session->sess_destroy();
         $user_id = $this->session->userdata('id');
         // $this->B_user_log_model->addLog(userLog('Logout System',  $this->session->userdata('first_name') . ' ' . $this->session->userdata('last_name') . ' Logout dari System', $this->session->userdata('id')));
-        $this->User->change_on_off($user_id, online_status('offline'));
+        $this->Model_user_login->change_on_off($user_id, online_status('offline'));
         // Redirect to login page
         redirect('auth/');
     }

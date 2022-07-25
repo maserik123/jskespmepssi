@@ -10,11 +10,6 @@
 
     <title>Gentelella Alela! | </title>
     <!-- jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css">
-
     <script src="<?php echo base_url('assets/') ?>vendors/jquery/dist/jquery.min.js"></script>
     <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-s1.11.3.min.js"></script> -->
     <script src="<?php echo base_url('assets/') ?>vendors/jquery/dist/jquery.min.js"></script>
@@ -53,7 +48,7 @@
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
-                        <a href="index.html" class="site_title"><img src="<?php echo base_url(); ?>assets/production/images/logo_pcr.png" alt="" width="150px" height="50px"></a>
+                        <a href="#" class="site_title"><img src="<?php echo base_url(); ?>assets/production/images/logo_pcr.png" alt="" width="150px" height="50px"></a>
                     </div>
 
                     <div class="clearfix"></div>
@@ -110,14 +105,19 @@
                                     <li><a href="#" onclick="logout()"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                                 </ul>
                             </li>
-
                             <li role="presentation" class="dropdown">
-                                <a href="" class="dropdown-toggle ">
+                                <a href="" class="dropdown-toggle bg-blue">
+                                    <i class="fa fa-television"></i>
+                                    System Log
+                                </a>
+                            </li>
+                            <li role="presentation" class="dropdown">
+                                <a href="" class="dropdown-toggle bg-orange">
                                     <i class="fa fa-refresh"></i>
                                     Reload
                                 </a>
-
                             </li>
+
                         </ul>
                     </nav>
                 </div>

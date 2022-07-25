@@ -7,8 +7,7 @@ class Model_prodi extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('program_study');
-        $this->db->get();
-        return $this->db->result();
+        return $this->db->get()->result();
     }
 
     function getAllData()

@@ -44,7 +44,8 @@ class Model_assessment extends CI_Model
 
     function update($id, $data)
     {
-        $this->db->update('assessment_schedule', $data, $id);
+        $this->db->where('assessment_schedule_id', $id);
+        $this->db->update('assessment_schedule', $data);
         return $this->db->affected_rows();
     }
 

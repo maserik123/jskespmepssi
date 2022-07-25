@@ -7,8 +7,7 @@ class Model_user_role extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('user_role');
-        $this->db->get();
-        return $this->db->result();
+        return $this->db->get()->result();
     }
 
     function getAllData()
@@ -31,13 +30,25 @@ class Model_user_role extends CI_Model
         return $this->db->get()->row();
     }
 
+    public function getDataById($id)
+    {
+        $query = $this->db->query('select * from user_role where user_role_id =' . $id);
+        return $query->result();
+    }
+
+    public function get_by_id($id)
+    {
+        return $this->db->get_where('user_role ap', array('ap.user_role_id' => $id))->result();
+    }
+
     function update($id, $data)
     {
-        $this->db->update('user_role', $data, $id);
+        $this->db->where('user_role_id', $id);
+        $this->db->update('user_role', $data);
         return $this->db->affected_rows();
     }
 
-    function deleteById($id)
+    function delete($id)
     {
         $this->db->where('user_role_id', $id);
         $this->db->delete('user_role');

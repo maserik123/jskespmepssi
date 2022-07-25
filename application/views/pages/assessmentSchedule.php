@@ -30,109 +30,23 @@
             }]
         });
 
-
-        // Program Study
-        table = $('#programStudy').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "lengthMenu": [
-                [10, 25, 50, -1],
-                [10, 25, 50, "All"]
-            ],
-            "responsive": false,
-            "dataType": 'JSON',
-            "ajax": {
-                "url": "<?php echo site_url('administrator/assessment/getDataProdi') ?>",
-                "type": "POST",
-                "data": {
-                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
-                }
-            },
-            "order": [
-                [0, "desc"]
-            ],
-            "columnDefs": [{
-                "targets": [0],
-                "className": "center"
-            }]
-        });
-
-        // Dosen Program Study
-        table = $('#programStudyLecturer').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "lengthMenu": [
-                [10, 25, 50, -1],
-                [10, 25, 50, "All"]
-            ],
-            "responsive": false,
-            "dataType": 'JSON',
-            "ajax": {
-                "url": "<?php echo site_url('administrator/assessment/getDataProdi') ?>",
-                "type": "POST",
-                "data": {
-                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
-                }
-            },
-            "order": [
-                [0, "desc"]
-            ],
-            "columnDefs": [{
-                "targets": [0],
-                "className": "center"
-            }]
-        });
     });
 
     var save_method;
 
-    function add() {
+    function addAssessment() {
         save_method = 'add';
-        $('.modal-title').text(' Add Data Users');
+        $('.modal-title').text(' Add Data Assessment');
         $('.reset-btn').show();
         $('.form-group')
             .removeClass('has-error')
             .removeClass('has-success')
             .find('#text-error')
             .remove();
-        $('#modalUser').modal('show');
+        $('#modalAssessment').modal('show');
     }
 
-    function addUserRole() {
-        save_method = 'add';
-        $('.modal-title').text(' Add Data Users Role');
-        $('.reset-btn').show();
-        $('.form-group')
-            .removeClass('has-error')
-            .removeClass('has-success')
-            .find('#text-error')
-            .remove();
-        $('#modalUserRole').modal('show');
-    }
 
-    function showProdi(id) {
-        $('.modal-title').text(' Ubah Data Prodi');
-        $('.reset-btn').show();
-        $('.form-group')
-            .removeClass('has-error')
-            .removeClass('has-success')
-            .find('#text-error')
-            .remove();
-        $('#Modal_prodi').modal('show');
-        $.ajax({
-            url: "<?php echo base_url('administrator/prestasi/getProdiIDByPrestasiId/'); ?>/" + id,
-            type: "GET",
-            dataType: "JSON",
-            success: function(data) {
-                console.log(data.id_prestasi);
-            }
-        });
-    }
-
-    function update_prestasi(id) {
-        var url = '<?php echo base_url("administrator/prestasi/formUpdate/") ?>' + id;
-        $(location).attr('href', url);
-    }
 
     function ubah(id) {
         save_method = 'update';
@@ -140,7 +54,7 @@
 
         //Load data dari ajax
         $.ajax({
-            url: "<?php echo site_url('administrator/prestasi/getById/'); ?>/" + id,
+            url: "<?php echo site_url('administrator/assessment/getById/'); ?>/" + id,
             type: "GET",
             dataType: "JSON",
             success: function(data) {
@@ -166,36 +80,6 @@
         });
     }
 
-    function detail(id) {
-        save_method = 'update';
-        $('#form_detail_prestasi')[0].reset();
-
-        //Load data dari ajax
-        $.ajax({
-            url: "<?php echo site_url('administrator/prestasi/getById/'); ?>/" + id,
-            type: "GET",
-            dataType: "JSON",
-            success: function(data) {
-                $('[name="pr_id1"]').html(data.pr_id);
-                $('[name="pr_tanggal1"]').html(data.pr_tanggal);
-                $('[name="pr_penghargaan1"]').html(data.pr_penghargaan);
-                $('[name="pr_kategori1"]').html(data.pr_kategori);
-                $('[name="pr_agenda1"]').html(data.pr_agenda);
-                $('[name="pr_tingkat1"]').html(data.pr_tingkat);
-                $('[name="pr_pemberi_penghargaan1"]').html(data.pr_pemberi_penghargaan);
-                $('[name="pr_tempat1"]').html(data.pr_tempat);
-                $('[name="pr_tahun1"]').html(data.pr_tahun);
-                $('[name="pr_penerima_penghargaan1"]').html(data.pr_penerima_penghargaan);
-                $('[name="prodi_nama1"]').html('<button>' + data.prodi_nama + '</button>');
-
-                $('#Detail_prestasi').modal('show');
-                $('.modal-title').text('Detail Data Prestasi');
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert('Error Get Data From Ajax');
-            }
-        });
-    }
 
     function hapus(id) {
         swal({
@@ -207,7 +91,7 @@
             closeOnConfirm: false
         }, function() {
             $.ajax({
-                url: "<?php echo site_url('administrator/prestasi/delete'); ?>/" + id,
+                url: "<?php echo site_url('administrator/assessment/delete'); ?>/" + id,
                 type: "POST",
                 data: {
                     '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
@@ -234,12 +118,12 @@
     var csrf_name = '<?php echo $this->security->get_csrf_token_name(); ?>'
     var csrf_hash = ''
 
-    function save() {
+    function saveAssessment() {
         var url;
         if (save_method == 'add') {
-            url = '<?php echo base_url() ?>administrator/user/insert';
+            url = '<?php echo base_url() ?>administrator/assessment/insert';
         } else {
-            url = '<?php echo base_url() ?>administrator/user/update';
+            url = '<?php echo base_url() ?>administrator/assessment/update';
         }
         swal({
             title: "Are you sure if the data is correct?",
@@ -253,7 +137,7 @@
                 $.ajax({
                     url: url,
                     type: 'POST',
-                    data: $('#add-form').serialize(),
+                    data: $('#form-assessment').serialize(),
                     dataType: "JSON",
                     success: function(resp) {
                         data = resp.result;
@@ -266,8 +150,8 @@
                                 .removeClass('has-success')
                                 .find('#text-error')
                                 .remove();
-                            $('#modalUser').modal('hide');
-                            $("#add-form")[0].reset();
+                            $('#modalAssessment').modal('hide');
+                            $("#form-assessment")[0].reset();
 
                         } else {
                             $.each(data['messages'], function(key, value) {
@@ -334,7 +218,7 @@
                                 <h2>Penjadwalan Asesmen</h2>
                                 <ul class="nav navbar-right panel_toolbox">
                                     <li>
-                                        <button class="btn btn-success btn-xs" onclick="add()" type="button"><i class="fa fa-plus"></i> Add Data</button>
+                                        <button class="btn btn-success btn-xs" onclick="addAssessment()" type="button"><i class="fa fa-plus"></i> Add Data</button>
                                     </li>
                                 </ul>
                                 <div class="clearfix"></div>
@@ -354,6 +238,70 @@
                                     </thead>
                                 </table>
                             </div>
+
+                            <!-- Modal User -->
+                            <div class="modal fade" id="modalAssessment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-md" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <h5 class="modal-title" id="modal-title"></h5>
+                                        </div>
+                                        <form class="form-horizontal" id="form-assessment" action="" method="POST">
+                                            <div class="modal-body">
+                                                <div class="item form-group">
+                                                    <input type="hidden" name="assessment_schedule_id" id="assessment_schedule_id">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 form-group">Program Study <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12 form-group">
+                                                        <select name="prodi_id" id="prodi_id" class="form-control col-md-7 col-xs-12">
+                                                            <option value="">Pilih Program Study</option>
+                                                            <?php foreach ($getListProdi as $row) { ?>
+                                                                <option value="<?php echo $row->program_study_id ?>"><?php echo $row->title; ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="item form-group">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Periode <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <input type="text" id="period" name="period" data-validate-linked="email" placeholder="Email" required="required" class="form-control col-md-7 col-xs-12">
+                                                    </div>
+                                                </div>
+                                                <div class="item form-group">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Mulai <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <input type="date" id="start" name="start" required="required" placeholder="Tanggal Mulai" data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
+                                                    </div>
+                                                </div>
+                                                <div class="item form-group">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Selesai <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <input type="date" id="end" name="end" required="required" placeholder="Tanggal Berakhir" class="form-control col-md-7 col-xs-12">
+                                                    </div>
+                                                </div>
+                                                <div class="item form-group">
+                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Total Tim <span class="required">*</span>
+                                                    </label>
+                                                    <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <input type="date" id="team_total" name="team_total" required="required" placeholder="Total Team" class="form-control col-md-7 col-xs-12">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-primary" onclick="saveAssessment()">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         <div role="tabpanel" class="fade" id="tab_content22" aria-labelledby="home-tab">
                             <div class="row">

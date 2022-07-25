@@ -9,8 +9,7 @@ class Model_prodi_lecturer extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('program_study_lecturer');
-        $this->db->get();
-        return $this->db->result();
+        return $this->db->get()->result();
     }
 
     function getAllData()
@@ -23,34 +22,35 @@ class Model_prodi_lecturer extends CI_Model
         a.year,
         b.full_name as kaprodi_name,
         create_date');
-        $this->datatables->from('program_study a');
+        $this->datatables->from('program_study_lecturer a');
         $this->datatables->join('user b', 'b.userid = a.user_id_for_kaprodi', 'left');
+        $this->datatables->join('program_study c', 'c.program_study_id = a.program_study_id', 'left');
         return $this->datatables->generate();
     }
 
     function addData($data)
     {
-        $this->db->insert('assessment_schedule', $data);
+        $this->db->insert('program_study_lecturer', $data);
         return $this->db->affected_rows() > 0 ? $this->db->insert_id() : FALSE;
     }
 
     public function getById($id)
     {
-        $this->db->from('assessment_schedule');
-        $this->db->where('assessment_schedule_id', $id);
+        $this->db->from('program_study_lecturer');
+        $this->db->where('program_study_lecturer_id', $id);
         return $this->db->get()->row();
     }
 
     function update($id, $data)
     {
-        $this->db->update('assessment_schedule', $data, $id);
+        $this->db->update('program_study_lecturer', $data, $id);
         return $this->db->affected_rows();
     }
 
-    function deleteById($id)
+    function delete($id)
     {
-        $this->db->where('user_role_id', $id);
-        $this->db->delete('assessment_schedule');
+        $this->db->where('program_study_lecturer_id', $id);
+        $this->db->delete('program_study_lecturer');
     }
 }
 

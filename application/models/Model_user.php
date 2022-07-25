@@ -7,8 +7,21 @@ class Model_user extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('user');
-        $this->db->get();
-        return $this->db->result();
+        return $this->db->get()->result();
+    }
+
+    function getListData()
+    {
+        $listUser = $this->db->from('user')->get()->result();
+        $userid = array();
+        $full_name = array();
+        foreach ($listUser as $row) {
+            $userid[] = $row->userid;
+            $full_name[] = $row->full_name;
+        }
+        $data = $userid;
+        $data = $full_name;
+        return $data;
     }
 
     function getAllData()
@@ -31,13 +44,25 @@ class Model_user extends CI_Model
         return $this->db->get()->row();
     }
 
+    public function getDataById($id)
+    {
+        $query = $this->db->query('select * from user where userid =' . $id);
+        return $query->result();
+    }
+
+    public function get_by_id($id)
+    {
+        return $this->db->get_where('user ap', array('ap.userid' => $id))->result();
+    }
+
     function update($id, $data)
     {
-        $this->db->update('user', $data, $id);
+        $this->db->where('userid', $id);
+        $this->db->update('user', $data);
         return $this->db->affected_rows();
     }
 
-    function deleteById($id)
+    function delete($id)
     {
         $this->db->where('userid', $id);
         $this->db->delete('user');

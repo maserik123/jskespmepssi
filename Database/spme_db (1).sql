@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 22, 2022 at 02:21 AM
+-- Generation Time: Jul 25, 2022 at 02:22 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.0.19
 
@@ -115,7 +115,7 @@ CREATE TABLE `configuration_video` (
 CREATE TABLE `menu` (
   `menu_id` int(11) NOT NULL,
   `menu_title` text NOT NULL,
-  `menu_link` text NOT NULL,
+  `controller_name` text NOT NULL,
   `menu_logo_id` text NOT NULL,
   `menu_description` text NOT NULL,
   `menu_hierarki` int(15) NOT NULL,
@@ -127,11 +127,13 @@ CREATE TABLE `menu` (
 -- Dumping data for table `menu`
 --
 
-INSERT INTO `menu` (`menu_id`, `menu_title`, `menu_link`, `menu_logo_id`, `menu_description`, `menu_hierarki`, `user_id`, `create_date`) VALUES
-(1, 'Configuration', 'configuration', '1', 'Menu akreditasi digunakan untuk merecord data akreditasi pada website SPME', 3, 1, '2022-07-14 17:00:38'),
-(2, 'Users Management', 'user', '2', 'Menu users digunakan untuk mengedit data pengguna', 2, 1, '2022-07-21 17:18:44'),
-(3, 'Assessment Schedule', 'assessment', '3', 'Menu assessment untuk melakukan penjadwalan asesment', 4, 1, '2022-07-16 03:15:41'),
-(4, 'Log System', 'systemLog', '5', 'System log is use to view the system activity', 5, 1, '2022-07-21 23:29:53');
+INSERT INTO `menu` (`menu_id`, `menu_title`, `controller_name`, `menu_logo_id`, `menu_description`, `menu_hierarki`, `user_id`, `create_date`) VALUES
+(1, 'Konfigurasi', 'configuration', '1', 'Menu akreditasi digunakan untuk merecord data akreditasi pada website SPME', 2, 1, '2022-07-23 10:36:27'),
+(2, 'Manajemen Pengguna', 'user', '2', 'Menu users digunakan untuk mengedit data pengguna', 3, 1, '2022-07-23 10:36:29'),
+(3, 'Penjadwalan Asesmen', 'assessment', '3', 'Menu assessment untuk melakukan penjadwalan asesment', 4, 1, '2022-07-23 15:08:56'),
+(5, 'Dokumen Akreditasi', 'accreditation', '4', '-', 5, 3, '2022-07-24 23:45:33'),
+(6, 'Dokumen Pendukung', 'supportDocuments', '6', 'Untuk menampung dokumen pendukung 3A dan 3B', 6, 1, '2022-07-24 23:55:16'),
+(7, 'Tim Akreditasi', 'accreditationTeam', '7', 'Untuk menampung data tim akreditasi', 7, 1, '2022-07-24 22:02:10');
 
 -- --------------------------------------------------------
 
@@ -481,6 +483,7 @@ INSERT INTO `menu_logo` (`menu_logo_id`, `title`, `script`, `create_date`) VALUE
 CREATE TABLE `program_study` (
   `program_study_id` int(11) NOT NULL,
   `title` text NOT NULL,
+  `abbreviation` text NOT NULL,
   `accreditation` text NOT NULL,
   `year` int(11) NOT NULL,
   `user_id_for_kaprodi` int(11) NOT NULL,
@@ -528,7 +531,7 @@ INSERT INTO `support_criteria` (`support_criteria_id`, `title`, `description`, `
 --
 
 CREATE TABLE `support_documents` (
-  `support_documents` int(11) NOT NULL,
+  `support_documents_id` int(11) NOT NULL,
   `title` text NOT NULL,
   `remarks` text NOT NULL,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -538,7 +541,7 @@ CREATE TABLE `support_documents` (
 -- Dumping data for table `support_documents`
 --
 
-INSERT INTO `support_documents` (`support_documents`, `title`, `remarks`, `create_date`) VALUES
+INSERT INTO `support_documents` (`support_documents_id`, `title`, `remarks`, `create_date`) VALUES
 (1, 'LKPS Documents', 'Document for adding the LKPS docs', '2022-07-20 00:42:49'),
 (2, 'LED Documents', 'LED Documents to add the LED Docs', '2022-07-20 00:43:15');
 
@@ -597,6 +600,7 @@ CREATE TABLE `user` (
   `email` varchar(115) NOT NULL,
   `address` text NOT NULL,
   `phone_number` varchar(50) NOT NULL,
+  `picture` text NOT NULL,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -604,9 +608,8 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`userid`, `full_name`, `nick_name`, `initial`, `NIP`, `email`, `address`, `phone_number`, `create_date`) VALUES
-(1, 'Assesor PSSI', 'PSSI', 'API', '21435552', 'aku@gmail.com', 'jl.lurus negara tenang', '082233445533', '2022-07-21 15:39:44'),
-(2, 'asda', 'sdfsdf', 'sdfsdf', '2312sdf', 'fitraarrafiq@gmail.com', 'asda', '12312321323', '2022-07-21 17:13:11');
+INSERT INTO `user` (`userid`, `full_name`, `nick_name`, `initial`, `NIP`, `email`, `address`, `phone_number`, `picture`, `create_date`) VALUES
+(4, 'Fitra Arrafiq 1', 'Fitra gg', 'FAR', '20017861', 'fitraarrafiq@gmail.com', 'medan pekanbaru', '082233445566', '', '2022-07-24 12:55:54');
 
 -- --------------------------------------------------------
 
@@ -644,7 +647,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `oauth_provider`, `oauth_uid`, `first_name`, `last_name`, `username`, `password`, `email`, `phone_number`, `address`, `gender`, `locale`, `picture`, `link`, `role`, `created`, `modified`, `block_status`, `online_status`, `time_online`, `time_offline`, `id_unit`) VALUES
-(42, '', '', 'First', 'Administrator', 'administrator', 'ad248d72422d9efc5bde0620401bd1d9', '', '081562442811', 'Jalan Dr. Setia Budhi No. 57, Rintis, Lima Puluh, Kota Pekanbaru, Riau (28141)', NULL, NULL, NULL, '', 'administrator', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 'offline', '2022-07-22 00:21:29', '2022-07-22 00:21:29', '');
+(42, '', '', 'First', 'Administrator', 'administrator', 'ad248d72422d9efc5bde0620401bd1d9', '', '081562442811', 'Jalan Dr. Setia Budhi No. 57, Rintis, Lima Puluh, Kota Pekanbaru, Riau (28141)', NULL, NULL, NULL, '', 'administrator', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 'offline', '2022-07-24 05:07:09', '2022-07-24 05:07:09', '');
 
 -- --------------------------------------------------------
 
@@ -670,14 +673,27 @@ CREATE TABLE `user_log` (
 
 CREATE TABLE `user_login` (
   `user_login_id` int(11) NOT NULL,
+  `oauth_provider` varchar(15) NOT NULL,
+  `oauth_uid` varchar(50) NOT NULL,
   `userid` int(11) NOT NULL,
   `username` varchar(115) NOT NULL,
   `password` varchar(115) NOT NULL,
+  `link` varchar(255) NOT NULL,
   `user_role_id` int(11) NOT NULL,
   `block_status` varchar(15) NOT NULL,
   `access_status` varchar(15) NOT NULL,
+  `online_status` varchar(12) DEFAULT NULL,
+  `time_online` timestamp NULL DEFAULT NULL,
+  `time_offline` timestamp NULL DEFAULT NULL,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user_login`
+--
+
+INSERT INTO `user_login` (`user_login_id`, `oauth_provider`, `oauth_uid`, `userid`, `username`, `password`, `link`, `user_role_id`, `block_status`, `access_status`, `online_status`, `time_online`, `time_offline`, `create_date`) VALUES
+(4, '', '', 4, 'administrator', 'ad248d72422d9efc5bde0620401bd1d9', '', 7, '0', '', 'online', '2022-07-24 21:42:19', NULL, '2022-07-24 21:42:30');
 
 -- --------------------------------------------------------
 
@@ -697,11 +713,7 @@ CREATE TABLE `user_role` (
 --
 
 INSERT INTO `user_role` (`user_role_id`, `role`, `description`, `create_date`) VALUES
-(1, 'sys_manager', '-', '2022-07-19 00:04:17'),
-(2, 'pengelola', '-', '2022-07-19 00:04:23'),
-(3, 'kaprodi', '-', '2022-07-19 00:04:42'),
-(4, 'admin_akreditasi', '-', '2022-07-19 00:06:04'),
-(5, 'test', 'test', '2022-07-21 23:07:48');
+(7, 'sys_manager', 'System Manager', '2022-07-24 11:26:40');
 
 --
 -- Indexes for dumped tables
@@ -777,7 +789,7 @@ ALTER TABLE `support_criteria`
 -- Indexes for table `support_documents`
 --
 ALTER TABLE `support_documents`
-  ADD PRIMARY KEY (`support_documents`);
+  ADD PRIMARY KEY (`support_documents_id`);
 
 --
 -- Indexes for table `support_master`
@@ -865,7 +877,7 @@ ALTER TABLE `configuration_video`
 -- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `menu_logo`
@@ -895,7 +907,7 @@ ALTER TABLE `support_criteria`
 -- AUTO_INCREMENT for table `support_documents`
 --
 ALTER TABLE `support_documents`
-  MODIFY `support_documents` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `support_documents_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `support_master`
@@ -913,7 +925,7 @@ ALTER TABLE `support_standard`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `userid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -931,13 +943,13 @@ ALTER TABLE `user_log`
 -- AUTO_INCREMENT for table `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `user_login_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `user_role`
 --
 ALTER TABLE `user_role`
-  MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

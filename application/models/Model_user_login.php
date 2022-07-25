@@ -47,11 +47,12 @@ class Model_user_login extends CI_Model
 
     function update($id, $data)
     {
-        $this->db->update('user_login', $data, $id);
+        $this->db->where('user_login_id', $id);
+        $this->db->update('user_login', $data);
         return $this->db->affected_rows();
     }
 
-    function deleteById($id)
+    function delete($id)
     {
         $this->db->where('user_login_id', $id);
         $this->db->delete('user_login');
@@ -69,14 +70,17 @@ class Model_user_login extends CI_Model
         b.phone_number,
         a.username,
         a.block_status,
-        a.access_status
+        a.access_status,
+        b.picture,
+        c.role,
+        a.online_status
         ');
         $this->db->from('user_login a');
         $this->db->join('user b', 'b.userid = a.userid', 'left');
         $this->db->join('user_role c', 'c.user_role_id = a.user_role_id', 'left');
         $this->db->where('username like binary', $username);
         $this->db->where('password like binary', $password);
-        return $this->db->get()->result();
+        return $this->db->get();
     }
 
     function change_on_off($id, $data)
@@ -84,6 +88,19 @@ class Model_user_login extends CI_Model
         $this->db->where('user_login_id', $id);
         $this->db->update('user_login', $data);
         return $this->db->affected_rows();
+    }
+
+    function getOnlineUserById($id)
+    {
+        $this->db->select('online_status');
+        $this->db->from('user_login');
+        $this->db->where('user_login_id', $id);
+        return $this->db->get()->result();
+    }
+
+    public function getuserById($id)
+    {
+        return $this->db->get_where('user_login ap', array('ap.user_login_id' => $id))->result();
     }
 }
 
