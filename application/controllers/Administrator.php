@@ -401,7 +401,9 @@ class Administrator extends CI_Controller
         if (empty($param)) {
             ob_start();
             $title['title'] = '';
+            $view['getListUser'] = $this->Model_user->getData();
             $view['getListProdi'] = $this->Model_prodi->getData();
+            $view['getListKaprodi'] = $this->Model_user->getUserBaseRole('Kaprodi');
             $this->load->view('pages/assessmentSchedule', $view);
             $html = ob_get_clean();
             $this->output->set_output(json_encode(array('html' => $html, 'title' => 'Assessment')));
@@ -434,22 +436,22 @@ class Administrator extends CI_Controller
 
             $this->form_validation->set_error_delimiters('<h6 id="text-error" class="help-block help-block-error">* ', '</h6>');
             if ($this->form_validation->run() == FALSE) {
-                $result = array('status' => 'error', 'msg' => 'Data is not right, please check again.');
+                $result = array('status' => 'error', 'msg' => 'Data yang anda isi belum tepat. silahkan cek kembali!');
                 foreach ($_POST as $key => $value) {
                     $result['messages'][$key] = form_error($key);
                 }
             } else {
-                $data = array(
-                    'prodi_id'                => htmlspecialchars($this->input->post('prodi_id')),
-                    'period'                => htmlspecialchars($this->input->post('period')),
-                    'start'                => htmlspecialchars($this->input->post('start')),
-                    'end'                => htmlspecialchars($this->input->post('end')),
-                    'team_total'                => htmlspecialchars($this->input->post('team_total')),
-                );
+                $calc_team =
+                    $data = array(
+                        'prodi_id'                => htmlspecialchars($this->input->post('prodi_id')),
+                        'period'                => htmlspecialchars($this->input->post('period')),
+                        'start'                => htmlspecialchars($this->input->post('start')),
+                        'end'                => htmlspecialchars($this->input->post('end')),
+                        'team_total'                => htmlspecialchars($this->input->post('team_total')),
+                    );
                 $result['messages'] = '';
                 $result = array('status' => 'success', 'msg' => 'Data Inserted!');
                 $this->Model_assessment->addData($data);
-                // $this->B_user_log_model->addLog(userLog('Add Data', $this->session->userdata('first_name') . ' Add data Tracer Study Program Study', $this->session->userdata('id')));
             }
 
             $csrf = array(
@@ -501,20 +503,19 @@ class Administrator extends CI_Controller
 
     function programStudy($param = '', $id = '')
     {
-        if (empty($param)) {
-        } else if ($param == 'getDataProdi') {
+        if ($param == 'getAllData') {
             $dt = $this->Model_prodi->getAllData();
             $start = $this->input->post('start');
             $data = array();
             foreach ($dt['data'] as $row) {
-                $enc_id     = encrypt($row->assessment_schedule_id);
+                $enc_id     = encrypt($row->program_study_id);
                 $th1    = '<div class="text-center">' . ++$start . '</div>';
                 $th2    = '<div class="text-left">' . $row->title . '</div>';
                 $th3    = '<div class="text-center">' . $row->abbreviation . '</div>';
                 $th4    = '<div class="text-center">' . $row->accreditation . '</div>';
                 $th5    = '<div class="text-center">' . $row->year . '</div>';
                 $th6    = '<div class="text-center">' . $row->kaprodi_name . '</div>';
-                $th7   = '<div class="text-center" style="width:100px;">' . (get_btn_group('underMaintenance()', 'underMaintenance()', 'underMaintenance()')) . '</div>';
+                $th7   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('underMaintenance()', 'underMaintenance()')) . '</div>';
                 $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7));
             }
             $dt['data'] = $data;
@@ -587,44 +588,36 @@ class Administrator extends CI_Controller
             echo json_encode(array('result' => $result, 'csrf' => $csrf));
             die;
         } else if ($param == 'delete') {
-            $this->Model_user->delete($id);
+            $this->Model_prodi->delete($id);
             $result = array('status' => 'success', 'msg' => 'Data berhasil dihapus !');
             echo json_encode(array('result' => $result));
             die;
         }
     }
 
-
-
     function programStudyLecturer($param = '', $id = '')
     {
-        if (empty($param)) {
-        } else if ($param == 'getDataProdiLecturer') {
+        if ($param == 'getAllData') {
             $dt = $this->Model_prodi_lecturer->getAllData();
             $start = $this->input->post('start');
             $data = array();
             foreach ($dt['data'] as $row) {
-                $enc_id     = encrypt($row->assessment_schedule_id);
+                $enc_id     = encrypt($row->program_study_lecturer_id);
                 $th1    = '<div class="text-center">' . ++$start . '</div>';
-                $th2    = '<div class="text-left">' . $row->title . '</div>';
-                $th3    = '<div class="text-center">' . $row->abbreviation . '</div>';
-                $th4    = '<div class="text-center">' . $row->accreditation . '</div>';
-                $th5    = '<div class="text-center">' . $row->year . '</div>';
-                $th6    = '<div class="text-center">' . $row->kaprodi_name . '</div>';
-                $th7   = '<div class="text-center" style="width:100px;">' . (get_btn_group('underMaintenance()', 'underMaintenance()', 'underMaintenance()')) . '</div>';
+                $th2    = '<div class="text-left">' . $row->full_name . '</div>';
+                $th3    = '<div class="text-center">' . $row->initial . '</div>';
+                $th4    = '<div class="text-center">' . $row->NIP . '</div>';
+                $th5    = '<div class="text-center">' . $row->email . '</div>';
+                $th6    = '<div class="text-center">' . $row->prodi . '</div>';
+                $th7   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('underMaintenance()', 'underMaintenance()')) . '</div>';
                 $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7));
             }
             $dt['data'] = $data;
             echo json_encode($dt);
             die;
         } else if ($param == 'insert') {
-            $this->form_validation->set_rules("full_name", "Full Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("nick_name", "Nick Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("initial", "Initial", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("NIP", "NIP", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("email", "Email", "trim|required", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed!'));
-            $this->form_validation->set_rules("address", "Address", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("phone_number", "Phone Number", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("userid", "Pengguna Sistem", "trim|required", array('required' => '{field} cannot be null !'));
+            $this->form_validation->set_rules("program_study_id", "Program Study", "trim|required", array('required' => '{field} cannot be null !'));
 
             $this->form_validation->set_error_delimiters('<h6 id="text-error" class="help-block help-block-error">* ', '</h6>');
             if ($this->form_validation->run() == FALSE) {
@@ -634,18 +627,12 @@ class Administrator extends CI_Controller
                 }
             } else {
                 $data = array(
-                    'full_name'          => htmlspecialchars($this->input->post('full_name')),
-                    'nick_name'          => htmlspecialchars($this->input->post('nick_name')),
-                    'initial'            => htmlspecialchars($this->input->post('initial')),
-                    'NIP'                => htmlspecialchars($this->input->post('NIP')),
-                    'email'              => htmlspecialchars($this->input->post('email')),
-                    'address'            => htmlspecialchars($this->input->post('address')),
-                    'phone_number'       => htmlspecialchars($this->input->post('phone_number')),
+                    'userid'                => htmlspecialchars($this->input->post('userid')),
+                    'program_study_id'      => htmlspecialchars($this->input->post('program_study_id')),
                 );
                 $result['messages'] = '';
                 $result = array('status' => 'success', 'msg' => 'Data Inserted!');
-                $this->Model_user->addData($data);
-                // $this->B_user_log_model->addLog(userLog('Add Data', $this->session->userdata('first_name') . ' Add data Tracer Study Program Study', $this->session->userdata('id')));
+                $this->Model_prodi_lecturer->addData($data);
             }
 
             $csrf = array(
@@ -658,13 +645,8 @@ class Administrator extends CI_Controller
             echo json_encode(array('data' => $data));
             die;
         } else if ($param == 'update') {
-            $this->form_validation->set_rules("full_name", "Full Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("nick_name", "Nick Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("initial", "Initial", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("NIP", "NIP", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("email", "Email", "trim|required", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed!'));
-            $this->form_validation->set_rules("address", "Address", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("phone_number", "Phone Number", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("userid", "Pengguna Sistem", "trim|required", array('required' => '{field} cannot be null !'));
+            $this->form_validation->set_rules("program_study_id", "Program Study", "trim|required", array('required' => '{field} cannot be null !'));
 
             $this->form_validation->set_error_delimiters('<small id="text-error" style="color:red;">*', '</small>');
             if ($this->form_validation->run() == FALSE) {
@@ -673,19 +655,14 @@ class Administrator extends CI_Controller
                     $result['messages'][$key] = form_error($key);
                 }
             } else {
-                $aidi = $this->input->post('userid');
+                $aidi = $this->input->post('program_study_lecturer_id');
                 $data = array(
-                    'full_name'          => htmlspecialchars($this->input->post('full_name')),
-                    'nick_name'          => htmlspecialchars($this->input->post('nick_name')),
-                    'initial'            => htmlspecialchars($this->input->post('initial')),
-                    'NIP'                => htmlspecialchars($this->input->post('NIP')),
-                    'email'              => htmlspecialchars($this->input->post('email')),
-                    'address'            => htmlspecialchars($this->input->post('address')),
-                    'phone_number'       => htmlspecialchars($this->input->post('phone_number')),
+                    'userid'                => htmlspecialchars($this->input->post('userid')),
+                    'program_study_id'      => htmlspecialchars($this->input->post('program_study_id')),
                 );
                 $result['messages']    = '';
                 $result        = array('status' => 'success', 'msg' => 'Data Berhasil diubah');
-                $this->Model_user->update($aidi, $data);
+                $this->Model_prodi_lecturer->update($aidi, $data);
             }
             $csrf = array(
                 'token' => $this->security->get_csrf_hash()
@@ -693,7 +670,7 @@ class Administrator extends CI_Controller
             echo json_encode(array('result' => $result, 'csrf' => $csrf));
             die;
         } else if ($param == 'delete') {
-            $this->Model_user->delete($id);
+            $this->Model_prodi_lecturer->delete($id);
             $result = array('status' => 'success', 'msg' => 'Data berhasil dihapus !');
             echo json_encode(array('result' => $result));
             die;

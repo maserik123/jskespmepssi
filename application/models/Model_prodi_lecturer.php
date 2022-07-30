@@ -15,17 +15,25 @@ class Model_prodi_lecturer extends CI_Model
     function getAllData()
     {
         $this->datatables->select('
-        a.program_study_id,
-        a.title,
-        a.abbreviation,
-        a.accreditation,
-        a.year,
-        b.full_name as kaprodi_name,
-        create_date');
+        a.program_study_lecturer_id,
+        b.full_name,
+        b.initial,
+        b.NIP,
+        b.email,
+        c.title as prodi,
+        a.create_date');
         $this->datatables->from('program_study_lecturer a');
-        $this->datatables->join('user b', 'b.userid = a.user_id_for_kaprodi', 'left');
+        $this->datatables->join('user b', 'b.userid = a.userid', 'inner');
         $this->datatables->join('program_study c', 'c.program_study_id = a.program_study_id', 'left');
         return $this->datatables->generate();
+    }
+
+    function calc_prodi_members($prodi_id)
+    {
+        $this->db->select('count(*) as total_members');
+        $this->db->from('program_study_lecturer');
+        $this->db->where('program_study_id', $prodi_id);
+        return $this->db->get()->row();
     }
 
     function addData($data)
@@ -43,7 +51,8 @@ class Model_prodi_lecturer extends CI_Model
 
     function update($id, $data)
     {
-        $this->db->update('program_study_lecturer', $data, $id);
+        $this->db->where('program_study_lecturer_id', $id);
+        $this->db->update('program_study_lecturer', $data);
         return $this->db->affected_rows();
     }
 

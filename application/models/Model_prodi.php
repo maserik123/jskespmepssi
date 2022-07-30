@@ -19,7 +19,7 @@ class Model_prodi extends CI_Model
         a.accreditation,
         a.year,
         b.full_name as kaprodi_name,
-        create_date');
+        a.create_date');
         $this->datatables->from('program_study a');
         $this->datatables->join('user b', 'b.userid = a.user_id_for_kaprodi', 'left');
         return $this->datatables->generate();
@@ -27,27 +27,28 @@ class Model_prodi extends CI_Model
 
     function addData($data)
     {
-        $this->db->insert('assessment_schedule', $data);
+        $this->db->insert('program_study', $data);
         return $this->db->affected_rows() > 0 ? $this->db->insert_id() : FALSE;
     }
 
     public function getById($id)
     {
-        $this->db->from('assessment_schedule');
-        $this->db->where('assessment_schedule_id', $id);
+        $this->db->from('program_study');
+        $this->db->where('program_study_id', $id);
         return $this->db->get()->row();
     }
 
     function update($id, $data)
     {
-        $this->db->update('assessment_schedule', $data, $id);
+        $this->db->where('program_study_id', $id);
+        $this->db->update('program_study', $data);
         return $this->db->affected_rows();
     }
 
-    function deleteById($id)
+    function delete($id)
     {
-        $this->db->where('user_role_id', $id);
-        $this->db->delete('assessment_schedule');
+        $this->db->where('program_study_id', $id);
+        $this->db->delete('program_study');
     }
 }
 

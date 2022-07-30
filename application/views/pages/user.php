@@ -1,5 +1,5 @@
 <script>
-    function updateAllTable() {
+    function updateUserRoleTable() {
         table.ajax.reload(null, false);
     }
 
@@ -307,7 +307,7 @@
                     },
                     dataType: "JSON",
                     success: function(data) {
-                        updateAllTable();
+                        updateUserRoleTable();
                         return swal({
                             html: true,
                             timer: 1300,
@@ -338,64 +338,68 @@
         swal({
             title: "Apakah anda sudah yakin ?",
             icon: "warning",
-            text: "Please ensure and then confirm!",
-            showCancelButton: !0,
-            cancelButtonText: "No, cancel!",
-            reverseButtons: !0
-        }).then(
-            function(e) {
-                if (e.value === true) {
-                    $.ajax({
-                        url: url,
-                        type: 'POST',
-                        data: $('#form-user').serialize(),
-                        dataType: "JSON",
-                        success: function(resp) {
-                            data = resp.result;
-                            // csrf_hash = resp.csrf['token']
-                            // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
-                            if (data['status'] == 'success') {
-                                updateUserTable();
-                                $('.form-group')
+            buttons: {
+                cancel: true,
+                confirm: true,
+            },
+        }).then((result) => {
+            if (result == true) {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: $('#form-user').serialize(),
+                    dataType: "JSON",
+                    success: function(resp) {
+                        data = resp.result;
+                        // csrf_hash = resp.csrf['token']
+                        // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
+                        if (data['status'] == 'success') {
+                            updateUserTable();
+                            $('.form-group')
+                                .removeClass('has-error')
+                                .removeClass('has-success')
+                                .find('#text-error')
+                                .remove();
+                            $('#modalUser').modal('hide');
+                            $("#form-user")[0].reset();
+
+                        } else {
+                            $.each(data['messages'], function(key, value) {
+                                var element = $('#' + key);
+                                element
+                                    .closest('div.form-group')
                                     .removeClass('has-error')
-                                    .removeClass('has-success')
+                                    .addClass(
+                                        value.length > 0 ?
+                                        'has-error' :
+                                        'has-success'
+                                    )
                                     .find('#text-error')
                                     .remove();
-                                $('#modalUser').modal('hide');
-                                $("#form-user")[0].reset();
-
-                            } else {
-                                $.each(data['messages'], function(key, value) {
-                                    var element = $('#' + key);
-                                    element
-                                        .closest('div.form-group')
-                                        .removeClass('has-error')
-                                        .addClass(
-                                            value.length > 0 ?
-                                            'has-error' :
-                                            'has-success'
-                                        )
-                                        .find('#text-error')
-                                        .remove();
-                                    element.after(value);
-                                });
-                            }
-                            return swal({
-                                html: true,
-                                timer: 1300,
-                                showConfirmButton: false,
-                                title: data['msg'],
-                                icon: data['status']
+                                element.after(value);
                             });
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            alert('Error adding/updating data');
                         }
-                    });
-                } else {
-                    e.dismiss;
-                }
-            });
+                        return swal({
+                            html: true,
+                            timer: 1300,
+                            showConfirmButton: false,
+                            title: data['msg'],
+                            icon: data['status']
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error adding/updating data');
+                    }
+                });
+            } else {
+                return swal({
+                    title: 'Transaksi telah dibatalkan !',
+                    content: true,
+                    timer: 1300,
+                    icon: 'warning'
+                });
+            }
+        });
     }
 
     function saveUserRole() {
@@ -405,15 +409,16 @@
         } else {
             url = '<?php echo base_url() ?>administrator/userRole/update';
         }
+
         swal({
-            title: "Are you sure if the data is correct?",
+            title: "Apakah anda sudah yakin ?",
             icon: "warning",
-            showCancelButton: true,
-            showLoaderOnConfirm: true,
-            confirmButtonText: "Ya",
-            closeOnConfirm: false
-        }).then(
-            function(e) {
+            buttons: {
+                cancel: true,
+                confirm: true,
+            },
+        }).then((result) => {
+            if (result == true) {
                 $.ajax({
                     url: url,
                     type: 'POST',
@@ -424,7 +429,7 @@
                         // csrf_hash = resp.csrf['token']
                         // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
                         if (data['status'] == 'success') {
-                            updateAllTable();
+                            updateUserRoleTable();
                             $('.form-group')
                                 .removeClass('has-error')
                                 .removeClass('has-success')
@@ -452,7 +457,6 @@
                         return swal({
                             html: true,
                             timer: 1300,
-                            showConfirmButton: false,
                             title: data['msg'],
                             icon: data['status']
                         });
@@ -461,8 +465,15 @@
                         alert('Error adding/updating data');
                     }
                 });
+            } else {
+                return swal({
+                    title: 'Transaksi telah dibatalkan !',
+                    content: true,
+                    timer: 1300,
+                    icon: 'warning'
+                });
             }
-        );
+        });
     }
 
     function saveUserLogin() {
@@ -473,24 +484,14 @@
             url = '<?php echo base_url() ?>administrator/userLogin/update';
         }
         swal({
-            title: "Are you sure if the data is correct?",
+            title: "Apakah anda sudah yakin ?",
             icon: "warning",
-            cancel: {
-                text: "Cancel",
-                value: null,
-                visible: true,
-                className: "",
-                closeModal: true,
+            buttons: {
+                cancel: true,
+                confirm: true,
             },
-            confirm: {
-                text: "OK",
-                value: true,
-                visible: true,
-                className: "",
-                closeModal: true
-            }
-        }).then(
-            function(e) {
+        }).then((result) => {
+            if (result == true) {
                 $.ajax({
                     url: url,
                     type: 'POST',
@@ -509,7 +510,6 @@
                                 .remove();
                             $('#modalUserLogin').modal('hide');
                             $("#add-form-login")[0].reset();
-
                         } else {
                             $.each(data['messages'], function(key, value) {
                                 var element = $('#' + key);
@@ -529,7 +529,6 @@
                         return swal({
                             html: true,
                             timer: 1300,
-                            showConfirmButton: false,
                             title: data['msg'],
                             icon: data['status']
                         });
@@ -538,8 +537,15 @@
                         alert('Error adding/updating data');
                     }
                 });
+            } else {
+                return swal({
+                    title: 'Transaksi telah dibatalkan !',
+                    content: true,
+                    timer: 1300,
+                    icon: 'warning'
+                });
             }
-        );
+        });
     }
 </script>
 

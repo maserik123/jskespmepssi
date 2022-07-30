@@ -24,6 +24,17 @@ class Model_user extends CI_Model
         return $data;
     }
 
+    function getUserBaseRole($role)
+    {
+        $query = $this->db->query('
+        select *
+        from user a
+        inner join user_login b on b.userid = a.userid
+        inner join user_role c on c.user_role_id = b.user_role_id
+        where c.role = "' . $role . '"');
+        return $query->result();
+    }
+
     function getAllData()
     {
         $this->datatables->select('userid,full_name,nick_name,initial,NIP,email,address,phone_number,create_date');
