@@ -336,63 +336,66 @@
             url = '<?php echo base_url() ?>administrator/user/update';
         }
         swal({
-            title: "Are you sure if the data is correct?",
+            title: "Apakah anda sudah yakin ?",
             icon: "warning",
-            showCancelButton: true,
-            showLoaderOnConfirm: true,
-            confirmButtonText: "Ya",
-            closeOnConfirm: false
+            text: "Please ensure and then confirm!",
+            showCancelButton: !0,
+            cancelButtonText: "No, cancel!",
+            reverseButtons: !0
         }).then(
             function(e) {
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: $('#form-user').serialize(),
-                    dataType: "JSON",
-                    success: function(resp) {
-                        data = resp.result;
-                        // csrf_hash = resp.csrf['token']
-                        // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
-                        if (data['status'] == 'success') {
-                            updateUserTable();
-                            $('.form-group')
-                                .removeClass('has-error')
-                                .removeClass('has-success')
-                                .find('#text-error')
-                                .remove();
-                            $('#modalUser').modal('hide');
-                            $("#form-user")[0].reset();
-
-                        } else {
-                            $.each(data['messages'], function(key, value) {
-                                var element = $('#' + key);
-                                element
-                                    .closest('div.form-group')
+                if (e.value === true) {
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: $('#form-user').serialize(),
+                        dataType: "JSON",
+                        success: function(resp) {
+                            data = resp.result;
+                            // csrf_hash = resp.csrf['token']
+                            // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
+                            if (data['status'] == 'success') {
+                                updateUserTable();
+                                $('.form-group')
                                     .removeClass('has-error')
-                                    .addClass(
-                                        value.length > 0 ?
-                                        'has-error' :
-                                        'has-success'
-                                    )
+                                    .removeClass('has-success')
                                     .find('#text-error')
                                     .remove();
-                                element.after(value);
+                                $('#modalUser').modal('hide');
+                                $("#form-user")[0].reset();
+
+                            } else {
+                                $.each(data['messages'], function(key, value) {
+                                    var element = $('#' + key);
+                                    element
+                                        .closest('div.form-group')
+                                        .removeClass('has-error')
+                                        .addClass(
+                                            value.length > 0 ?
+                                            'has-error' :
+                                            'has-success'
+                                        )
+                                        .find('#text-error')
+                                        .remove();
+                                    element.after(value);
+                                });
+                            }
+                            return swal({
+                                html: true,
+                                timer: 1300,
+                                showConfirmButton: false,
+                                title: data['msg'],
+                                icon: data['status']
                             });
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            alert('Error adding/updating data');
                         }
-                        return swal({
-                            html: true,
-                            timer: 1300,
-                            showConfirmButton: false,
-                            title: data['msg'],
-                            icon: data['status']
-                        });
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        alert('Error adding/updating data');
-                    }
-                });
-            }
-        );
+                    });
+                } else {
+                    e.dismiss;
+                }
+            });
     }
 
     function saveUserRole() {
@@ -625,7 +628,6 @@
                                                 <th>Email</th>
                                                 <th>Alamat</th>
                                                 <th>No HP</th>
-                                                <th>Gambar</th>
                                                 <th>Tools</th>
                                             </tr>
                                         </thead>

@@ -26,7 +26,7 @@ class Model_user extends CI_Model
 
     function getAllData()
     {
-        $this->datatables->select('userid,full_name,nick_name,initial,NIP,email,address,phone_number,picture,create_date');
+        $this->datatables->select('userid,full_name,nick_name,initial,NIP,email,address,phone_number,create_date');
         $this->datatables->from('user');
         return $this->datatables->generate();
     }

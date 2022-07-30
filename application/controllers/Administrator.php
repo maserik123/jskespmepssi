@@ -54,9 +54,9 @@ class Administrator extends CI_Controller
                 $th6    = '<div class="text-center">' . $row->email . '</div>';
                 $th7    = '<div class="text-center">' . $row->address . '</div>';
                 $th8    = '<div class="text-center">' . $row->phone_number . '</div>';
-                $th9    = '<div class="text-center">' . $row->picture . '</div>';
-                $th10   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('update_user(' . $userid . ')', 'delete_user(' . $userid . ')')) . '</div>';
-                $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7, $th8, $th9, $th10));
+                // $th9    = '<div class="text-center">' . $row->picture . '</div>';
+                $th9   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('update_user(' . $userid . ')', 'delete_user(' . $userid . ')')) . '</div>';
+                $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7, $th8, $th9));
             }
             $dt['data'] = $data;
             echo json_encode($dt);
