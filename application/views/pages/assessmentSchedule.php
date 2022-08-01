@@ -111,6 +111,7 @@
 
     function addProdi() {
         save_method_prodi = 'add';
+
         $('.modal-title').text(' Add Data Program Study');
         $('.reset-btn').show();
         $('.form-group')
@@ -119,6 +120,8 @@
             .find('#text-error')
             .remove();
         $('#modalProdi').modal('show');
+        $('#form-prodi')[0].reset();
+
     }
 
     function addProdiLecturer() {
@@ -133,9 +136,8 @@
         $('#modalProdiLecturer').modal('show');
     }
 
-    function ubah(id) {
-        save_method = 'update';
-        $('#form_prestasi')[0].reset();
+    function ubahAssessment(id) {
+        save_method_asesmen = 'update';
 
         //Load data dari ajax
         $.ajax({
@@ -144,21 +146,64 @@
             dataType: "JSON",
             success: function(resp) {
                 data = resp.data;
-                $('[name="pr_id"]').val(data.pr_id);
-                $('[name="pr_tanggal"]').val(data.pr_tanggal);
-                $('[name="pr_penghargaan"]').val(data.pr_penghargaan);
-                $('[name="pr_kategori"]').val(data.pr_kategori);
-                $('[name="pr_agenda"]').val(data.pr_agenda);
-                $('[name="pr_tingkat"]').val(data.pr_tingkat);
-                $('[name="pr_pemberi_penghargaan"]').val(data.pr_pemberi_penghargaan);
-                $('[name="pr_tempat"]').val(data.pr_tempat);
-                $('[name="pr_tahun"]').val(data.pr_tahun);
-                $('[name="pr_penerima_penghargaan"]').val(data.pr_penerima_penghargaan);
-                $('[name="prodi_id"]').html('<button type="button" onclick="showProdi(' + data.pr_id + ')" class="btn btn-primary btn-xs">Program Studi</button>');
-                $('#btn_prodi').show();
-                $('#list_prodi').hide();
-                $('#Modal_prestasi').modal('show');
-                $('.modal-title').text('Edit Data Prestasi');
+                $('[name="assessment_schedule_id"]').val(data.assessment_schedule_id);
+                $('[name="prodi_id"]').val(data.prodi_id);
+                $('[name="period"]').val(data.period);
+                $('[name="start"]').val(data.start);
+                $('[name="end"]').val(data.end);
+                $('[name="team_total"]').val(data.team_total);
+                $('#modalAssessment').modal('show');
+                $('.modal-title').text('Edit Data Assessment');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error Get Data From Ajax');
+            }
+        });
+    }
+
+    function ubahProdi(id) {
+        save_method_prodi = 'update';
+        $('#form-prodi')[0].reset();
+
+        //Load data dari ajax
+        $.ajax({
+            url: "<?php echo site_url('administrator/programStudy/getById/'); ?>/" + id,
+            type: "GET",
+            dataType: "JSON",
+            success: function(resp) {
+                data = resp.data;
+                $('[name="program_study_id"]').val(data.program_study_id);
+                $('[name="title"]').val(data.title);
+                $('[name="abbreviation"]').val(data.abbreviation);
+                $('[name="accreditation"]').val(data.accreditation);
+                $('[name="year"]').val(data.year);
+                $('[name="user_id_for_kaprodi"]').val(data.user_id_for_kaprodi);
+                $('.modal-title').text('Edit Data Program Study');
+                $('#modalProdi').modal('show');
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error Get Data From Ajax');
+            }
+        });
+    }
+
+    function ubahDosenProdi(id) {
+        save_method_lecturer = 'update';
+        $('#form-prodi-lecturer')[0].reset();
+
+        //Load data dari ajax
+        $.ajax({
+            url: "<?php echo site_url('administrator/programStudyLecturer/getById/'); ?>/" + id,
+            type: "GET",
+            dataType: "JSON",
+            success: function(resp) {
+                data = resp.data;
+                $('[name="program_study_lecturer_id"]').val(data.program_study_lecturer_id);
+                $('[name="userid"]').val(data.userid);
+                $('[name="program_study_id"]').val(data.program_study_id);
+                $('#modalProdiLecturer').modal('show');
+                $('.modal-title').text('Edit Data Dosen');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 alert('Error Get Data From Ajax');
@@ -169,7 +214,7 @@
     function deleteAssessment(id) {
         swal({
             title: "Apakah Yakin Akan Dihapus?",
-            type: "warning",
+            icon: "warning",
             buttons: {
                 cancel: true,
                 confirm: true,
@@ -183,13 +228,14 @@
                         '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
                     },
                     dataType: "JSON",
-                    success: function(data) {
-                        updateAllTable();
+                    success: function(resp) {
+                        data = resp.result
+                        updateAsesmenTable();
                         return swal({
                             content: true,
                             timer: 1300,
                             title: data['msg'],
-                            icon: data['status']
+                            icon: 'success'
                         });
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -201,7 +247,93 @@
                     content: true,
                     title: 'Transaksi telah dibatalkan !',
                     timer: 1300,
-                    icon: data['warning']
+                    icon: 'error'
+                });
+            }
+        });
+
+    }
+
+    function deleteProdi(id) {
+        swal({
+            title: "Apakah Yakin Akan Dihapus?",
+            icon: "warning",
+            buttons: {
+                cancel: true,
+                confirm: true,
+            },
+        }).then((result) => {
+            if (result == true) {
+                $.ajax({
+                    url: "<?php echo site_url('administrator/ProgramStudy/delete'); ?>/" + id,
+                    type: "POST",
+                    data: {
+                        '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                    },
+                    dataType: "JSON",
+                    success: function(resp) {
+                        data = resp.result
+                        updateProdiTable();
+                        return swal({
+                            content: true,
+                            timer: 1300,
+                            title: result['msg'],
+                            icon: 'success'
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error Deleting Data');
+                    }
+                });
+            } else {
+                return swal({
+                    content: true,
+                    title: 'Transaksi telah dibatalkan !',
+                    timer: 1300,
+                    icon: 'error'
+                });
+            }
+        });
+
+    }
+
+    function deleteDosenProdi(id) {
+        swal({
+            title: "Apakah Yakin Akan Dihapus?",
+            icon: "warning",
+            buttons: {
+                cancel: true,
+                confirm: true,
+            },
+        }).then((result) => {
+            if (result == true) {
+                $.ajax({
+                    url: "<?php echo site_url('administrator/programStudyLecturer/delete'); ?>/" + id,
+                    type: "POST",
+                    data: {
+                        '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                    },
+                    dataType: "JSON",
+                    success: function(resp) {
+                        data = resp.result;
+                        updateLecturerTable();
+                        return swal({
+                            content: true,
+                            timer: 1300,
+                            title: data['msg'],
+                            icon: 'success'
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error Deleting Data');
+                    }
+                });
+            } else {
+                return swal({
+                    content: true,
+                    title: 'Transaksi telah dibatalkan !',
+                    timer: 1300,
+                    icon: 'error'
                 });
             }
         });
@@ -237,7 +369,7 @@
                         // csrf_hash = resp.csrf['token']
                         // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
                         if (data['status'] == 'success') {
-                            updateAllTable();
+                            updateProdiTable();
                             $('.form-group')
                                 .removeClass('has-error')
                                 .removeClass('has-success')
@@ -263,9 +395,8 @@
                             });
                         }
                         return swal({
-                            html: true,
+                            content: true,
                             timer: 1300,
-                            showConfirmButton: false,
                             title: data['msg'],
                             icon: data['status']
                         });
@@ -312,7 +443,7 @@
                         // csrf_hash = resp.csrf['token']
                         // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
                         if (data['status'] == 'success') {
-                            updateAllTable();
+                            updateLecturerTable();
                             $('.form-group')
                                 .removeClass('has-error')
                                 .removeClass('has-success')
@@ -338,9 +469,8 @@
                             });
                         }
                         return swal({
-                            html: true,
+                            content: true,
                             timer: 1300,
-                            showConfirmButton: false,
                             title: data['msg'],
                             icon: data['status']
                         });
@@ -387,7 +517,7 @@
                         // csrf_hash = resp.csrf['token']
                         // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
                         if (data['status'] == 'success') {
-                            updateAllTable();
+                            updateAsesmenTable();
                             $('.form-group')
                                 .removeClass('has-error')
                                 .removeClass('has-success')
@@ -413,11 +543,10 @@
                             });
                         }
                         return swal({
-                            html: true,
+                            content: true,
                             timer: 1300,
-                            showConfirmButton: false,
                             title: data['msg'],
-                            icon: data['status']
+                            icon: 'success'
                         });
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -461,35 +590,32 @@
             </div>
             <div class="x_content">
 
-                <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                <div class="" role="tabpanel">
 
                     <div id="myTabContent2" class="tab-content">
                         <div role="tabpanel" class="tab-pane fade active in" id="tab_content11" aria-labelledby="home-tab">
-                            <div class="x_title">
-                                <h2>Penjadwalan Asesmen</h2>
-                                <ul class="nav navbar-right panel_toolbox">
-                                    <li>
-                                        <button class="btn btn-success btn-xs" onclick="addAssessment()" type="button"><i class="fa fa-plus"></i> Add Data</button>
-                                    </li>
-                                </ul>
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="x_content">
-                                <table id="assessment_schedule" class="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Program Study</th>
-                                            <th>Periode</th>
-                                            <th>Mulai</th>
-                                            <th>Selesai</th>
-                                            <th>Tim</th>
-                                            <th>Tools</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-
+                            <h2>Penjadwalan Asesmen</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li>
+                                    <button class="btn btn-success btn-xs" onclick="addAssessment()" type="button"><i class="fa fa-plus"></i> Add Data</button>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                            <table id="assessment_schedule" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Program Study</th>
+                                        <th>Akreditasi</th>
+                                        <th>Tahun Berdiri</th>
+                                        <th>Periode</th>
+                                        <th>Mulai</th>
+                                        <th>Selesai</th>
+                                        <th>Tim</th>
+                                        <th>Tools</th>
+                                    </tr>
+                                </thead>
+                            </table>
                             <!-- Modal ASSESSMENT -->
                             <div class="modal fade" id="modalAssessment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-md" role="document">
@@ -519,7 +645,7 @@
                                                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Periode <span class="required">*</span>
                                                     </label>
                                                     <div class="col-md-9 col-sm-9 col-xs-12">
-                                                        <input type="text" id="period" name="period" data-validate-linked="email" placeholder="Email" required="required" class="form-control col-md-7 col-xs-12">
+                                                        <input type="text" id="period" name="period" placeholder="Periode" required="required" class="form-control col-md-7 col-xs-12">
                                                     </div>
                                                 </div>
                                                 <div class="item form-group">
@@ -536,13 +662,13 @@
                                                         <input type="date" id="end" name="end" required="required" placeholder="Tanggal Berakhir" class="form-control col-md-7 col-xs-12">
                                                     </div>
                                                 </div>
-                                                <div class="item form-group">
+                                                <!-- <div class="item form-group">
                                                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Total Tim <span class="required">*</span>
                                                     </label>
                                                     <div class="col-md-9 col-sm-9 col-xs-12">
                                                         <input type="text" id="team_total" name="team_total" required="required" placeholder="Total Team" class="form-control col-md-7 col-xs-12">
                                                     </div>
-                                                </div>
+                                                </div> -->
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -593,37 +719,37 @@
                                                 <div class="modal-body">
                                                     <input type="hidden" name="program_study_id" id="program_study_id">
                                                     <div class="item form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Judul Program Study <span class="required">*</span>
+                                                        <label class="control-label col-md-4 col-sm-4 col-xs-12">Judul Program Study <span class="required">*</span>
                                                         </label>
-                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <div class="col-md-8 col-sm-8 col-xs-12">
                                                             <input type="text" id="title" name="title" placeholder='Judul Program Study' required="required" class="form-control col-md-7 col-xs-12">
                                                         </div>
                                                     </div>
                                                     <div class="item form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Abbreviation <span class="required">*</span>
+                                                        <label class="control-label col-md-4 col-sm-4 col-xs-12">Abbreviation <span class="required">*</span>
                                                         </label>
-                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <div class="col-md-8 col-sm-8 col-xs-12">
                                                             <input type="text" id="abbreviation" name="abbreviation" required="required" placeholder="Abbreviation" data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
                                                         </div>
                                                     </div>
                                                     <div class="item form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Akreditasi <span class="required">*</span>
+                                                        <label class="control-label col-md-4 col-sm-4 col-xs-12">Akreditasi <span class="required">*</span>
                                                         </label>
-                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <div class="col-md-8 col-sm-8 col-xs-12">
                                                             <input type="text" id="accreditation" name="accreditation" required="required" placeholder="Akreditasi" class="form-control col-md-7 col-xs-12">
                                                         </div>
                                                     </div>
                                                     <div class="item form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Tahun Berdiri<span class="required">*</span>
+                                                        <label class="control-label col-md-4 col-sm-4 col-xs-12">Tahun Berdiri<span class="required">*</span>
                                                         </label>
-                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <div class="col-md-8 col-sm-8 col-xs-12">
                                                             <input type="text" id="year" name="year" required="required" placeholder="Tahun Berdiri" class="form-control col-md-7 col-xs-12">
                                                         </div>
                                                     </div>
                                                     <div class="item form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Pilih Kaprodi<span class="required">*</span>
+                                                        <label class="control-label col-md-4 col-sm-4 col-xs-12">Pilih Kaprodi<span class="required">*</span>
                                                         </label>
-                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <div class="col-md-8 col-sm-8 col-xs-12">
                                                             <select name="user_id_for_kaprodi" id="user_id_for_kaprodi" class="form-control">
                                                                 <option value="">Pilih Kaprodi</option>
                                                                 <?php foreach ($getListKaprodi as $r) { ?>
@@ -682,9 +808,9 @@
                                                 <div class="modal-body">
                                                     <input type="hidden" name="program_study_lecturer_id" id="program_study_lecturer_id">
                                                     <div class="item form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Pilih Pengguna <span class="required">*</span>
+                                                        <label class="control-label col-md-4 col-sm-4 col-xs-12">Pilih Pengguna <span class="required">*</span>
                                                         </label>
-                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <div class="col-md-8 col-sm-8 col-xs-12">
                                                             <select name="userid" id="userid" class="form-control">
                                                                 <option value="">Pilih Pengguna</option>
                                                                 <?php foreach ($getListUser as $b) { ?>
@@ -694,9 +820,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="item form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Pilih Program Study <span class="required">*</span>
+                                                        <label class="control-label col-md-4 col-sm-4 col-xs-12">Pilih Program Study <span class="required">*</span>
                                                         </label>
-                                                        <div class="col-md-9 col-sm-9 col-xs-12">
+                                                        <div class="col-md-8 col-sm-8 col-xs-12">
                                                             <select name="program_study_id" id="program_study_id" class="form-control">
                                                                 <option value="">Pilih Program Study</option>
                                                                 <?php foreach ($getListProdi as $b) { ?>

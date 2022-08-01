@@ -49,9 +49,9 @@ class Model_assessment extends CI_Model
         return $this->db->affected_rows();
     }
 
-    function deleteById($id)
+    function delete($id)
     {
-        $this->db->where('user_role_id', $id);
+        $this->db->where('assessment_schedule_id', $id);
         $this->db->delete('assessment_schedule');
     }
 }

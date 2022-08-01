@@ -412,7 +412,7 @@ class Administrator extends CI_Controller
             $start = $this->input->post('start');
             $data = array();
             foreach ($dt['data'] as $row) {
-                $enc_id     = encrypt($row->assessment_schedule_id);
+                $enc_id     = ($row->assessment_schedule_id);
                 $th1    = '<div class="text-center">' . ++$start . '</div>';
                 $th2    = '<div class="text-left">' . $row->title_prodi . '</div>';
                 $th3    = '<div class="text-center">' . $row->accreditation_prodi . '</div>';
@@ -421,7 +421,7 @@ class Administrator extends CI_Controller
                 $th6    = '<div class="text-center">' . $row->start . '</div>';
                 $th7    = '<div class="text-center">' . $row->end . '</div>';
                 $th8    = '<div class="text-center">' . $row->team . '</div>';
-                $th9   = '<div class="text-center" style="width:100px;">' . (get_btn_group('underMaintenance()', 'underMaintenance()', 'underMaintenance()')) . '</div>';
+                $th9   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('ubahAssessment(' . $enc_id . ')', 'deleteAssessment(' . $enc_id . ')')) . '</div>';
                 $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7, $th8, $th9));
             }
             $dt['data'] = $data;
@@ -432,7 +432,7 @@ class Administrator extends CI_Controller
             $this->form_validation->set_rules("period", "Periode", "trim|required", array('required' => '{field} cannot be null !'));
             $this->form_validation->set_rules("start", "Tanggal Mulai", "trim|required", array('required' => '{field} cannot be null !'));
             $this->form_validation->set_rules("end", "Tanggal Selesai", "trim|required", array('required' => '{field} cannot be null !'));
-            $this->form_validation->set_rules("team_total", "Total Team", "trim|required", array('required' => '{field} cannot be null !'));
+            // $this->form_validation->set_rules("team_total", "Total Team", "trim|required", array('required' => '{field} cannot be null !'));
 
             $this->form_validation->set_error_delimiters('<h6 id="text-error" class="help-block help-block-error">* ', '</h6>');
             if ($this->form_validation->run() == FALSE) {
@@ -447,10 +447,10 @@ class Administrator extends CI_Controller
                         'period'                => htmlspecialchars($this->input->post('period')),
                         'start'                => htmlspecialchars($this->input->post('start')),
                         'end'                => htmlspecialchars($this->input->post('end')),
-                        'team_total'                => htmlspecialchars($this->input->post('team_total')),
+                        // 'team_total'                => htmlspecialchars($this->input->post('team_total')),
                     );
                 $result['messages'] = '';
-                $result = array('status' => 'success', 'msg' => 'Data Inserted!');
+                $result = array('status' => 'success', 'msg' => 'Data telah dimasukkan!');
                 $this->Model_assessment->addData($data);
             }
 
@@ -468,7 +468,7 @@ class Administrator extends CI_Controller
             $this->form_validation->set_rules("period", "Periode", "trim|required", array('required' => '{field} cannot be null !'));
             $this->form_validation->set_rules("start", "Tanggal Mulai", "trim|required", array('required' => '{field} cannot be null !'));
             $this->form_validation->set_rules("end", "Tanggal Selesai", "trim|required", array('required' => '{field} cannot be null !'));
-            $this->form_validation->set_rules("team_total", "Total Team", "trim|required", array('required' => '{field} cannot be null !'));
+            // $this->form_validation->set_rules("team_total", "Total Team", "trim|required", array('required' => '{field} cannot be null !'));
             $this->form_validation->set_error_delimiters('<small id="text-error" style="color:red;">*', '</small>');
             if ($this->form_validation->run() == FALSE) {
                 $result = array('status' => 'error', 'msg' => 'Data yang anda isi belum benar !');
@@ -482,7 +482,7 @@ class Administrator extends CI_Controller
                     'period'                => htmlspecialchars($this->input->post('period')),
                     'start'                => htmlspecialchars($this->input->post('start')),
                     'end'                => htmlspecialchars($this->input->post('end')),
-                    'team_total'                => htmlspecialchars($this->input->post('team_total')),
+                    // 'team_total'                => htmlspecialchars($this->input->post('team_total')),
                 );
                 $result['messages']    = '';
                 $result        = array('status' => 'success', 'msg' => 'Data Berhasil diubah');
@@ -508,14 +508,14 @@ class Administrator extends CI_Controller
             $start = $this->input->post('start');
             $data = array();
             foreach ($dt['data'] as $row) {
-                $enc_id     = encrypt($row->program_study_id);
+                $enc_id     = $row->program_study_id;
                 $th1    = '<div class="text-center">' . ++$start . '</div>';
                 $th2    = '<div class="text-left">' . $row->title . '</div>';
                 $th3    = '<div class="text-center">' . $row->abbreviation . '</div>';
                 $th4    = '<div class="text-center">' . $row->accreditation . '</div>';
                 $th5    = '<div class="text-center">' . $row->year . '</div>';
                 $th6    = '<div class="text-center">' . $row->kaprodi_name . '</div>';
-                $th7   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('underMaintenance()', 'underMaintenance()')) . '</div>';
+                $th7   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('ubahProdi(' . $enc_id . ')', 'deleteProdi(' . $enc_id . ')')) . '</div>';
                 $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7));
             }
             $dt['data'] = $data;
@@ -602,14 +602,14 @@ class Administrator extends CI_Controller
             $start = $this->input->post('start');
             $data = array();
             foreach ($dt['data'] as $row) {
-                $enc_id     = encrypt($row->program_study_lecturer_id);
+                $enc_id     = $row->program_study_lecturer_id;
                 $th1    = '<div class="text-center">' . ++$start . '</div>';
                 $th2    = '<div class="text-left">' . $row->full_name . '</div>';
                 $th3    = '<div class="text-center">' . $row->initial . '</div>';
                 $th4    = '<div class="text-center">' . $row->NIP . '</div>';
                 $th5    = '<div class="text-center">' . $row->email . '</div>';
                 $th6    = '<div class="text-center">' . $row->prodi . '</div>';
-                $th7   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('underMaintenance()', 'underMaintenance()')) . '</div>';
+                $th7   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('ubahDosenProdi(' . $enc_id . ')', 'deleteDosenProdi(' . $enc_id . ')')) . '</div>';
                 $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7));
             }
             $dt['data'] = $data;
@@ -621,7 +621,7 @@ class Administrator extends CI_Controller
 
             $this->form_validation->set_error_delimiters('<h6 id="text-error" class="help-block help-block-error">* ', '</h6>');
             if ($this->form_validation->run() == FALSE) {
-                $result = array('status' => 'error', 'msg' => 'Data is not right, please check again.');
+                $result = array('status' => 'error', 'msg' => 'Data Masih belum tepat, silahkan dicoba kembali.');
                 foreach ($_POST as $key => $value) {
                     $result['messages'][$key] = form_error($key);
                 }
@@ -631,7 +631,7 @@ class Administrator extends CI_Controller
                     'program_study_id'      => htmlspecialchars($this->input->post('program_study_id')),
                 );
                 $result['messages'] = '';
-                $result = array('status' => 'success', 'msg' => 'Data Inserted!');
+                $result = array('status' => 'success', 'msg' => 'Data Berhasil di masukkan!');
                 $this->Model_prodi_lecturer->addData($data);
             }
 
@@ -641,7 +641,7 @@ class Administrator extends CI_Controller
             echo json_encode(array('result' => $result, 'csrf' => $csrf));
             die;
         } else if ($param == 'getById') {
-            $data = $this->Model_user->getById($id);
+            $data = $this->Model_prodi_lecturer->getById($id);
             echo json_encode(array('data' => $data));
             die;
         } else if ($param == 'update') {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 25, 2022 at 02:22 AM
+-- Generation Time: Aug 01, 2022 at 05:55 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.0.19
 
@@ -63,6 +63,13 @@ CREATE TABLE `assessment_schedule` (
   `team_total` int(11) NOT NULL,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `assessment_schedule`
+--
+
+INSERT INTO `assessment_schedule` (`assessment_schedule_id`, `prodi_id`, `period`, `start`, `end`, `team_total`, `create_date`) VALUES
+(3, 1, 2022, '2022-08-01', '2022-08-30', 0, '2022-08-01 15:54:01');
 
 -- --------------------------------------------------------
 
@@ -490,6 +497,13 @@ CREATE TABLE `program_study` (
   `create_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `program_study`
+--
+
+INSERT INTO `program_study` (`program_study_id`, `title`, `abbreviation`, `accreditation`, `year`, `user_id_for_kaprodi`, `create_date`) VALUES
+(1, 'Sistem Informasi', 'SI', 'B', 2022, 5, '2022-08-01 12:31:12');
+
 -- --------------------------------------------------------
 
 --
@@ -502,6 +516,13 @@ CREATE TABLE `program_study_lecturer` (
   `program_study_id` int(11) NOT NULL,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `program_study_lecturer`
+--
+
+INSERT INTO `program_study_lecturer` (`program_study_lecturer_id`, `userid`, `program_study_id`, `create_date`) VALUES
+(10, 5, 1, '2022-08-01 15:27:57');
 
 -- --------------------------------------------------------
 
@@ -609,45 +630,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`userid`, `full_name`, `nick_name`, `initial`, `NIP`, `email`, `address`, `phone_number`, `picture`, `create_date`) VALUES
-(4, 'Fitra Arrafiq 1', 'Fitra gg', 'FAR', '20017861', 'fitraarrafiq@gmail.com', 'medan pekanbaru', '082233445566', '', '2022-07-24 12:55:54');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
-  `oauth_provider` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
-  `oauth_uid` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `first_name` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  `last_name` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  `username` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `phone_number` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `address` text COLLATE utf8_unicode_ci NOT NULL,
-  `gender` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `locale` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `picture` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `link` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `role` enum('administrator','manajer','unit','ka_gudang','office') COLLATE utf8_unicode_ci DEFAULT NULL,
-  `created` datetime NOT NULL,
-  `modified` datetime NOT NULL,
-  `block_status` int(3) NOT NULL,
-  `online_status` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
-  `time_online` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `time_offline` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `id_unit` varchar(45) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `oauth_provider`, `oauth_uid`, `first_name`, `last_name`, `username`, `password`, `email`, `phone_number`, `address`, `gender`, `locale`, `picture`, `link`, `role`, `created`, `modified`, `block_status`, `online_status`, `time_online`, `time_offline`, `id_unit`) VALUES
-(42, '', '', 'First', 'Administrator', 'administrator', 'ad248d72422d9efc5bde0620401bd1d9', '', '081562442811', 'Jalan Dr. Setia Budhi No. 57, Rintis, Lima Puluh, Kota Pekanbaru, Riau (28141)', NULL, NULL, NULL, '', 'administrator', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 0, 'offline', '2022-07-24 05:07:09', '2022-07-24 05:07:09', '');
+(4, 'Fitra Arrafiq', 'Fitra', 'FAR', '20017861', 'fitraarrafiq@gmail.com', 'medan pekanbaru', '082233445566', '', '2022-07-26 22:18:55'),
+(5, 'Benget Manahan Siregar', 'Benget', 'BMS', '20088334', 'benget@globalnet.lcl', 'Serapung', '09334455666', '', '2022-07-30 04:45:48'),
+(6, 'Samsul Rizal', 'Sam', 'SRZ', '23344551', 'samsul@kerinci.lcl', 'medan', '08233445566', '', '2022-07-30 04:46:02');
 
 -- --------------------------------------------------------
 
@@ -693,7 +678,8 @@ CREATE TABLE `user_login` (
 --
 
 INSERT INTO `user_login` (`user_login_id`, `oauth_provider`, `oauth_uid`, `userid`, `username`, `password`, `link`, `user_role_id`, `block_status`, `access_status`, `online_status`, `time_online`, `time_offline`, `create_date`) VALUES
-(4, '', '', 4, 'administrator', 'ad248d72422d9efc5bde0620401bd1d9', '', 7, '0', '', 'online', '2022-07-24 21:42:19', NULL, '2022-07-24 21:42:30');
+(4, '', '', 4, 'administrator', 'ad248d72422d9efc5bde0620401bd1d9', '', 7, '0', '', 'online', '2022-08-01 12:16:35', NULL, '2022-08-01 12:16:35'),
+(5, '', '', 5, 'user1', 'secret', '', 8, '0', '', NULL, NULL, NULL, '2022-07-30 04:40:24');
 
 -- --------------------------------------------------------
 
@@ -713,7 +699,9 @@ CREATE TABLE `user_role` (
 --
 
 INSERT INTO `user_role` (`user_role_id`, `role`, `description`, `create_date`) VALUES
-(7, 'sys_manager', 'System Manager', '2022-07-24 11:26:40');
+(7, 'sys_manager', 'System Manager', '2022-07-24 11:26:40'),
+(8, 'Kaprodi', 'Kaprodi bertugas memimpin program study', '2022-07-26 22:15:32'),
+(9, 'Dosen', 'Dosen Bertugas sebagai tenaga pengajar', '2022-07-30 04:35:05');
 
 --
 -- Indexes for dumped tables
@@ -810,12 +798,6 @@ ALTER TABLE `user`
   ADD PRIMARY KEY (`userid`);
 
 --
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `user_log`
 --
 ALTER TABLE `user_log`
@@ -853,7 +835,7 @@ ALTER TABLE `accreditation_members`
 -- AUTO_INCREMENT for table `assessment_schedule`
 --
 ALTER TABLE `assessment_schedule`
-  MODIFY `assessment_schedule_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `assessment_schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `configuration_banner`
@@ -889,13 +871,13 @@ ALTER TABLE `menu_logo`
 -- AUTO_INCREMENT for table `program_study`
 --
 ALTER TABLE `program_study`
-  MODIFY `program_study_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `program_study_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `program_study_lecturer`
 --
 ALTER TABLE `program_study_lecturer`
-  MODIFY `program_study_lecturer_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `program_study_lecturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `support_criteria`
@@ -925,13 +907,7 @@ ALTER TABLE `support_standard`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `userid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `user_log`
@@ -943,13 +919,13 @@ ALTER TABLE `user_log`
 -- AUTO_INCREMENT for table `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `user_login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `user_login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `user_role`
 --
 ALTER TABLE `user_role`
-  MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
