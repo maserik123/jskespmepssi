@@ -26,7 +26,16 @@ class Model_assessment extends CI_Model
         $this->datatables->from('assessment_schedule a');
         $this->datatables->join('program_study b', 'b.program_study_id = a.prodi_id', 'inner');
         $this->datatables->join('program_study_lecturer c', 'c.program_study_id = a.prodi_id', 'inner');
+        $this->datatables->group_by('b.title');
         return $this->datatables->generate();
+    }
+
+    function check_assessment_prodi($prodi_id)
+    {
+        $this->db->select('count(prodi_id) as total_prodi');
+        $this->db->from('assessment_schedule');
+        $this->db->where('prodi_id', $prodi_id);
+        return $this->db->get()->result();
     }
 
     function addData($data)

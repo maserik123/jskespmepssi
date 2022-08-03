@@ -11,84 +11,64 @@
         table_login.ajax.reload(null, false);
     }
 
-    $(document).ready(function() {
-        table_login = $('#userLogin').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "lengthMenu": [
-                [10, 25, 50, -1],
-                [10, 25, 50, "All"]
-            ],
-            "responsive": false,
-            "dataType": 'JSON',
-            "ajax": {
-                "url": "<?php echo site_url('administrator/userLogin/getAllData') ?>",
-                "type": "POST",
-                "data": {
-                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
-                }
-            },
-            "order": [
-                [0, "desc"]
-            ],
-            "columnDefs": [{
-                "targets": [0],
-                "className": "center"
-            }]
-        });
-    });
-    $(document).ready(function() {
-        table_user = $('#userManagementTable').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "lengthMenu": [
-                [10, 25, 50, -1],
-                [10, 25, 50, "All"]
-            ],
-            "responsive": false,
-            "dataType": 'JSON',
-            "ajax": {
-                "url": "<?php echo site_url('administrator/user/getAllData') ?>",
-                "type": "POST",
-                "data": {
-                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
-                }
-            },
-            "order": [
-                [0, "desc"]
-            ],
-            "columnDefs": [{
-                "targets": [0],
-                "className": "center"
-            }]
-        });
-    });
-    $(document).ready(function() {
-        table = $('#userRoleTable').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "lengthMenu": [
-                [10, 25, 50, -1],
-                [10, 25, 50, "All"]
-            ],
-            "responsive": false,
-            "dataType": 'JSON',
-            "ajax": {
-                "url": "<?php echo site_url('administrator/userRole/getAllData') ?>",
-                "type": "POST",
-                "data": {
-                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
-                }
-            },
-            "order": [
-                [0, "desc"]
-            ],
-            "columnDefs": [{
-                "targets": [0],
-                "className": "center"
-            }]
-        });
-    });
+
+    function showData(criteria_id, documents_id) {
+
+        console.log(criteria_id);
+        if (documents_id == 1) {
+
+            table_lkps = $('#lkps').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                "responsive": false,
+                "dataType": 'JSON',
+                "ajax": {
+                    "url": "<?php echo site_url('administrator/getSupportDoc/') ?>" + criteria_id + "/" + documents_id,
+                    "type": "POST",
+                    "data": {
+                        '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                    }
+                },
+                "order": [
+                    [0, "desc"]
+                ],
+                "columnDefs": [{
+                    "targets": [0],
+                    "className": "center"
+                }]
+            });
+        } else if (documents_id == 2) {
+            table_led = $('#led').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                "responsive": false,
+                "dataType": 'JSON',
+                "ajax": {
+                    "url": "<?php echo site_url('administrator/getSupportDoc/') ?>" + criteria_id + "/" + documents_id,
+                    "type": "POST",
+                    "data": {
+                        '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                    }
+                },
+                "order": [
+                    [0, "desc"]
+                ],
+                "columnDefs": [{
+                    "targets": [0],
+                    "className": "center"
+                }]
+            });
+        }
+    }
+
 
     var save_method;
     var save_method_role;
@@ -394,150 +374,6 @@
             }
         );
     }
-
-    function saveUserRole() {
-        var url;
-        if (save_method_role == 'add') {
-            url = '<?php echo base_url() ?>administrator/userRole/insert';
-        } else {
-            url = '<?php echo base_url() ?>administrator/userRole/update';
-        }
-        swal({
-            title: "Are you sure if the data is correct?",
-            icon: "warning",
-            showCancelButton: true,
-            showLoaderOnConfirm: true,
-            confirmButtonText: "Ya",
-            closeOnConfirm: false
-        }).then(
-            function(e) {
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: $('#add-form-role').serialize(),
-                    dataType: "JSON",
-                    success: function(resp) {
-                        data = resp.result;
-                        // csrf_hash = resp.csrf['token']
-                        // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
-                        if (data['status'] == 'success') {
-                            updateAllTable();
-                            $('.form-group')
-                                .removeClass('has-error')
-                                .removeClass('has-success')
-                                .find('#text-error')
-                                .remove();
-                            $('#modalUserRole').modal('hide');
-                            $("#add-form-role")[0].reset();
-
-                        } else {
-                            $.each(data['messages'], function(key, value) {
-                                var element = $('#' + key);
-                                element
-                                    .closest('div.form-group')
-                                    .removeClass('has-error')
-                                    .addClass(
-                                        value.length > 0 ?
-                                        'has-error' :
-                                        'has-success'
-                                    )
-                                    .find('#text-error')
-                                    .remove();
-                                element.after(value);
-                            });
-                        }
-                        return swal({
-                            html: true,
-                            timer: 1300,
-                            showConfirmButton: false,
-                            title: data['msg'],
-                            icon: data['status']
-                        });
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        alert('Error adding/updating data');
-                    }
-                });
-            }
-        );
-    }
-
-    function saveUserLogin() {
-        var url;
-        if (save_method_login == 'add') {
-            url = '<?php echo base_url() ?>administrator/userLogin/insert';
-        } else {
-            url = '<?php echo base_url() ?>administrator/userLogin/update';
-        }
-        swal({
-            title: "Are you sure if the data is correct?",
-            icon: "warning",
-            cancel: {
-                text: "Cancel",
-                value: null,
-                visible: true,
-                className: "",
-                closeModal: true,
-            },
-            confirm: {
-                text: "OK",
-                value: true,
-                visible: true,
-                className: "",
-                closeModal: true
-            }
-        }).then(
-            function(e) {
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: $('#add-form-login').serialize(),
-                    dataType: "JSON",
-                    success: function(resp) {
-                        data = resp.result;
-                        // csrf_hash = resp.csrf['token']
-                        // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
-                        if (data['status'] == 'success') {
-                            updateLoginTable();
-                            $('.form-group')
-                                .removeClass('has-error')
-                                .removeClass('has-success')
-                                .find('#text-error')
-                                .remove();
-                            $('#modalUserLogin').modal('hide');
-                            $("#add-form-login")[0].reset();
-
-                        } else {
-                            $.each(data['messages'], function(key, value) {
-                                var element = $('#' + key);
-                                element
-                                    .closest('div.form-group')
-                                    .removeClass('has-error')
-                                    .addClass(
-                                        value.length > 0 ?
-                                        'has-error' :
-                                        'has-success'
-                                    )
-                                    .find('#text-error')
-                                    .remove();
-                                element.after(value);
-                            });
-                        }
-                        return swal({
-                            html: true,
-                            timer: 1300,
-                            showConfirmButton: false,
-                            title: data['msg'],
-                            icon: data['status']
-                        });
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        alert('Error adding/updating data');
-                    }
-                });
-            }
-        );
-    }
 </script>
 
 <div class="page-title">
@@ -555,45 +391,37 @@
             <div class="x_title">
                 <h4><i class="fa fa-bars"></i> Dokumen Pendukung <small>System</small></h4>
                 <div class="clearfix"></div>
+                <button class="btn btn-success btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-plus"></i> Add Data</button>
             </div>
             <div class="x_content">
                 <div class="" role="tabpanel" data-example-id="togglable-tabs">
                     <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#tab_content1" id="user-tab" role="tab" data-toggle="tab" aria-expanded="true">Pendukung LKPS</a>
-                        </li>
-                        <li role="presentation" class=""><a href="#tab_content2" role="tab" id="user-role-tab" data-toggle="tab" aria-expanded="false">Pendukung LED</a>
-                        </li>
+                        <?php $no = 0;
+                        foreach ($getDocument as $row) { ?>
+                            <li role="presentation" class=""><a href="#tab_content<?php echo ++$no; ?>" id="user-tab" role="tab" data-toggle="tab" aria-expanded="true"><?php echo $row->title; ?></a>
+                            </li>
+                        <?php } ?>
                     </ul>
                     <div id="myTabContent" class="tab-content">
                         <!-- Bagian TAB User Management -->
                         <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
                             <div class="x_panel">
                                 <div class="x_title">
-                                    <h2>Dokumen <small>Pendukung LKPS</small></h2>
+                                    <h2>Dokumen Pendukung LKPS <small></small></h2>
 
                                     <ul class="nav navbar-right panel_toolbox">
-                                        <li>
-                                            <button class="btn btn-primary btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-list"></i> Kriteria 1</button>
-                                        </li>
-                                        <li>
-                                            <button class="btn btn-primary btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-list"></i> Kriteria 2</button>
-                                        </li>
-                                        <li>
-                                            <button class="btn btn-primary btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-list"></i> Kriteria 3</button>
-                                        </li>
-                                        <li>
-                                            <button class="btn btn-primary btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-list"></i> Kriteria 4</button>
-                                        </li>
-                                        <li>
-                                            <button class="btn btn-primary btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-list"></i> Kriteria 5</button>
-                                        </li>
+                                        <?php foreach ($getListCriteria as $b) { ?>
+                                            <li>
+                                                <button class="btn btn-primary btn-xs" onclick="showData('<?php echo $b->support_criteria_id; ?>',1)" type="button"><i class="fa fa-list"></i> <?php echo $b->title; ?></button>
+                                            </li>
+                                        <?php }
+                                        ?>
                                     </ul>
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
-                                    <button class="btn btn-success btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-plus"></i> Add Data</button>
 
-                                    <table id="supportDocuments" class="table table-striped table-bordered">
+                                    <table id="lkps" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
@@ -611,32 +439,22 @@
                         <div role="tabpanel" class="fade" id="tab_content2" aria-labelledby="profile-tab">
                             <div class="x_panel">
                                 <div class="x_title">
-                                    <h2>Dokumen <small>Pendukung LED</small></h2>
                                     <ul class="nav navbar-right panel_toolbox">
                                         <ul class="nav navbar-right panel_toolbox">
-                                            <li>
-                                                <button class="btn btn-primary btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-list"></i> Kriteria 1</button>
-                                            </li>
-                                            <li>
-                                                <button class="btn btn-primary btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-list"></i> Kriteria 2</button>
-                                            </li>
-                                            <li>
-                                                <button class="btn btn-primary btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-list"></i> Kriteria 3</button>
-                                            </li>
-                                            <li>
-                                                <button class="btn btn-primary btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-list"></i> Kriteria 4</button>
-                                            </li>
-                                            <li>
-                                                <button class="btn btn-primary btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-list"></i> Kriteria 5</button>
-                                            </li>
+                                            <?php foreach ($getListCriteria as $b) { ?>
+                                                <li>
+                                                    <button class="btn btn-primary btn-xs" onclick="showData('<?php echo $b->support_criteria_id; ?>',2)" type="button"><i class="fa fa-list"></i> <?php echo $b->title; ?></button>
+                                                </li>
+                                            <?php }
+                                            ?>
                                         </ul>
                                     </ul>
+                                    <h2>Dokumen Pendukung LED <br><small></small></h2>
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
-                                    <button class="btn btn-success btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-plus"></i> Add Data</button>
 
-                                    <table id="supportDocuments" class="table table-striped table-bordered">
+                                    <table id="led" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
@@ -674,45 +492,50 @@
                 <form class="form-horizontal" id="form-user" action="" method="POST">
                     <div class="modal-body">
                         <div class="item form-group">
-                            <input type="hidden" name="userid" id="userid">
-                            <label class="control-label col-md-2 col-sm-2 col-xs-12 form-group">Name <span class="required">*</span>
+                            <input type="hidden" name="support_master_id" id="support_master_id">
+                            <label class="control-label col-md-2 col-sm-2 col-xs-12 form-group">Kriteria/Standard <span class="required">*</span>
                             </label>
                             <div class="col-md-5 col-sm-5 col-xs-12 form-group">
-                                <input id="full_name" class="form-control col-md-3 col-xs-12" name="full_name" placeholder="Full Name" required="required" type="text">
+                                <input id="support_criteria_id" class="form-control col-md-3 col-xs-12" name="support_criteria_id" placeholder="Kriteria" required="required" type="text">
                             </div>
                             <div class="col-md-5 col-sm-5 col-xs-12 form-group">
-                                <input id="nick_name" class="form-control col-md-3 col-xs-12" name="nick_name" placeholder="Nick Name" required="required" type="text">
+                                <input id="support_standard_id" class="form-control col-md-3 col-xs-12" name="support_standard_id" placeholder="Standar" required="required" type="text">
                             </div>
                         </div>
                         <div class="item form-group">
-                            <label class="control-label col-md-2 col-sm-2 col-xs-12 form-group">Initial/NIP <span class="required">*</span>
-                            </label>
-                            <div class="col-md-5 col-sm-5 col-xs-12 form-group">
-                                <input type="text" id="initial" name="initial" required="required" placeholder="Initial" class="form-control col-md-3 col-xs-12 ">
-                            </div>
-                            <div class="col-md-5 col-sm-5 col-xs-12 form-group">
-                                <input type="text" id="NIP" name="NIP" required="required" placeholder="NIP" class="form-control col-md-3 col-xs-12">
-                            </div>
-                        </div>
-                        <div class="item form-group">
-                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Email <span class="required">*</span>
+                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Pilih Dokumen Pendukung <span class="required">*</span>
                             </label>
                             <div class="col-md-10 col-sm-10 col-xs-12">
+                                <select name="support_documents_id" id="support_documents_id" class="form-control"></select>
                                 <input type="email" id="email" name="email" data-validate-linked="email" placeholder="Email" required="required" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
                         <div class="item form-group">
-                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Address <span class="required">*</span>
+                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Nomor <span class="required">*</span>
                             </label>
                             <div class="col-md-10 col-sm-10 col-xs-12">
-                                <input type="text" id="address" name="address" required="required" placeholder="Address" data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
+                                <input type="text" id="number" name="number" required="required" placeholder="Address" data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
                         <div class="item form-group">
-                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Phone <span class="required">*</span>
+                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Judul <span class="required">*</span>
                             </label>
                             <div class="col-md-10 col-sm-10 col-xs-12">
-                                <input type="text" id="phone_number" name="phone_number" required="required" placeholder="Phone Number" class="form-control col-md-7 col-xs-12">
+                                <input type="text" id="title" name="title" required="required" placeholder="Phone Number" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="item form-group">
+                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Link <span class="required">*</span>
+                            </label>
+                            <div class="col-md-10 col-sm-10 col-xs-12">
+                                <input type="text" id="link" name="link" required="required" placeholder="Phone Number" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="item form-group">
+                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Keterangan <span class="required">*</span>
+                            </label>
+                            <div class="col-md-10 col-sm-10 col-xs-12">
+                                <input type="text" id="remarks" name="remarks" required="required" placeholder="Phone Number" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
                     </div>

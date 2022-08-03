@@ -231,6 +231,8 @@
                     success: function(resp) {
                         data = resp.result
                         updateAsesmenTable();
+                        updateProdiTable();
+                        updateLecturerTable();
                         return swal({
                             content: true,
                             timer: 1300,
@@ -273,7 +275,9 @@
                     dataType: "JSON",
                     success: function(resp) {
                         data = resp.result
+                        updateAsesmenTable();
                         updateProdiTable();
+                        updateLecturerTable();
                         return swal({
                             content: true,
                             timer: 1300,
@@ -316,6 +320,8 @@
                     dataType: "JSON",
                     success: function(resp) {
                         data = resp.result;
+                        updateAsesmenTable();
+                        updateProdiTable();
                         updateLecturerTable();
                         return swal({
                             content: true,
@@ -369,7 +375,9 @@
                         // csrf_hash = resp.csrf['token']
                         // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
                         if (data['status'] == 'success') {
+                            updateAsesmenTable();
                             updateProdiTable();
+                            updateLecturerTable();
                             $('.form-group')
                                 .removeClass('has-error')
                                 .removeClass('has-success')
@@ -443,6 +451,8 @@
                         // csrf_hash = resp.csrf['token']
                         // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
                         if (data['status'] == 'success') {
+                            updateAsesmenTable();
+                            updateProdiTable();
                             updateLecturerTable();
                             $('.form-group')
                                 .removeClass('has-error')
@@ -518,6 +528,8 @@
                         // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
                         if (data['status'] == 'success') {
                             updateAsesmenTable();
+                            updateProdiTable();
+                            updateLecturerTable();
                             $('.form-group')
                                 .removeClass('has-error')
                                 .removeClass('has-success')
@@ -546,7 +558,7 @@
                             content: true,
                             timer: 1300,
                             title: data['msg'],
-                            icon: 'success'
+                            icon: data['status']
                         });
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -558,7 +570,7 @@
                     title: 'Transaksi telah dibatalkan !',
                     content: true,
                     timer: 1300,
-                    icon: 'warnings'
+                    icon: 'warning'
                 });
             }
 

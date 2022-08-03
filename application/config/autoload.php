@@ -136,4 +136,17 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('Model_menu', 'Model_user', 'Model_user_role', 'Model_user', 'Model_assessment', 'Model_user_login', 'Model_prodi', 'Model_prodi_lecturer');
+$autoload['model'] = array(
+    'Model_menu',
+    'Model_user',
+    'Model_user_role',
+    'Model_user',
+    'Model_assessment',
+    'Model_user_login',
+    'Model_prodi',
+    'Model_accreditation',
+    'Model_prodi_lecturer',
+    'Model_support_documents',
+    'Model_support_criteria',
+    'Model_support_master'
+);

@@ -280,14 +280,14 @@
                                 <div class="col-md-6 col-sm-6 col-xs-12">
 
                                     <div class="product-image">
-                                        <img src="<?php echo base_url('') ?>assets/production/images//prod-1.jpg" alt="..." />
+                                        <img src="<?php echo base_url('') ?>assets/production/images/banner_pcr.jpg" alt="..." />
                                     </div>
 
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-12" style="border:0px solid #e5e5e5;">
 
                                     <div class="product-image">
-                                        <img src="<?php echo base_url('') ?>assets/production/images//prod-1.jpg" alt="..." />
+                                        <img src="<?php echo base_url('') ?>assets/production/images/banner_pcr.jpg" alt="..." />
                                     </div>
 
                                 </div>
