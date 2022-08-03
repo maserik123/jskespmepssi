@@ -1,74 +1,73 @@
 <script>
+    var id;
+    var id_criteria;
+
     function updateAllTable() {
         table.ajax.reload(null, false);
     }
 
-    function updateUserTable() {
-        table_user.ajax.reload(null, false);
+    $(document).ready(function() {
+        tableNoFilter.destroy();
+
+        tableNoFilter = $('#lkpsDoc').DataTable({
+
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            "responsive": true,
+            "dataType": 'JSON',
+            "ajax": {
+                "url": "<?php echo site_url('administrator/getSupportDocLKPS'); ?>",
+                "type": "POST",
+                "data": {
+                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                }
+            },
+            "order": [
+                [0, "desc"]
+            ],
+            "columnDefs": [{
+                "targets": [0],
+                "className": "center"
+            }]
+        });
+    });
+
+    function getData(criteria_id) {
+        table.destroy();
+
+        table = $('#lkpsDoc').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            "responsive": true,
+            "dataType": 'JSON',
+            "ajax": {
+
+                "url": "<?php echo site_url('administrator/getSupportDocLKPS/'); ?>" + criteria_id,
+                "type": "POST",
+                "data": {
+                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                }
+            },
+            "order": [
+                [0, "desc"]
+            ],
+
+            "columnDefs": [{
+                "targets": [0],
+                "className": "center",
+
+            }]
+        });
+
     }
-
-    function updateLoginTable() {
-        table_login.ajax.reload(null, false);
-    }
-
-
-    function showData(criteria_id, documents_id) {
-
-        console.log(criteria_id);
-        if (documents_id == 1) {
-
-            table_lkps = $('#lkps').DataTable({
-                "processing": true,
-                "serverSide": true,
-                "lengthMenu": [
-                    [10, 25, 50, -1],
-                    [10, 25, 50, "All"]
-                ],
-                "responsive": false,
-                "dataType": 'JSON',
-                "ajax": {
-                    "url": "<?php echo site_url('administrator/getSupportDoc/') ?>" + criteria_id + "/" + documents_id,
-                    "type": "POST",
-                    "data": {
-                        '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
-                    }
-                },
-                "order": [
-                    [0, "desc"]
-                ],
-                "columnDefs": [{
-                    "targets": [0],
-                    "className": "center"
-                }]
-            });
-        } else if (documents_id == 2) {
-            table_led = $('#led').DataTable({
-                "processing": true,
-                "serverSide": true,
-                "lengthMenu": [
-                    [10, 25, 50, -1],
-                    [10, 25, 50, "All"]
-                ],
-                "responsive": false,
-                "dataType": 'JSON',
-                "ajax": {
-                    "url": "<?php echo site_url('administrator/getSupportDoc/') ?>" + criteria_id + "/" + documents_id,
-                    "type": "POST",
-                    "data": {
-                        '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
-                    }
-                },
-                "order": [
-                    [0, "desc"]
-                ],
-                "columnDefs": [{
-                    "targets": [0],
-                    "className": "center"
-                }]
-            });
-        }
-    }
-
 
     var save_method;
     var save_method_role;
@@ -89,29 +88,6 @@
 
     }
 
-    function addUserRole() {
-        save_method_role = 'add';
-        $('.modal-title').text(' Add Data Users Role');
-        $('.reset-btn').show();
-        $('.form-group')
-            .removeClass('has-error')
-            .removeClass('has-success')
-            .find('#text-error')
-            .remove();
-        $('#modalUserRole').modal('show');
-    }
-
-    function addUserLogin() {
-        save_method_login = 'add';
-        $('.modal-title').text(' Add Data Users Login');
-        $('.reset-btn').show();
-        $('.form-group')
-            .removeClass('has-error')
-            .removeClass('has-success')
-            .find('#text-error')
-            .remove();
-        $('#modalUserLogin').modal('show');
-    }
     // End method add
 
     // Start Method Update
@@ -138,57 +114,6 @@
                 $('.modal-title').text('Edit Data Pengguna');
                 console.log(data.userid);
                 updateAllTable();
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert('Error Get Data From Ajax');
-            }
-        });
-    }
-
-    function update_user_role(id) {
-        save_method_role = 'update';
-        $('#add-form-role')[0].reset();
-
-        //Load data dari ajax
-        $.ajax({
-            url: "<?php echo base_url('administrator/userRole/getById/'); ?>" + id,
-            type: "GET",
-            dataType: "JSON",
-            success: function(resp) {
-                data = resp.data
-                $('[name="user_role_id"]').val(data.user_role_id);
-                $('[name="role"]').val(data.role);
-                $('[name="description"]').val(data.description);
-                $('#modalUserRole').modal('show');
-                $('.modal-title').text('Edit Data Role Pengguna');
-                // console.log(data.user_role_id);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert('Error Get Data From Ajax');
-            }
-        });
-    }
-
-    function update_user_login(id) {
-        save_method_login = 'update';
-        $('#add-form-login')[0].reset();
-
-        //Load data dari ajax
-        $.ajax({
-            url: "<?php echo base_url('administrator/userLogin/getById/'); ?>" + id,
-            type: "GET",
-            dataType: "JSON",
-            success: function(resp) {
-                data = resp.data
-                $('[name="user_login_id"]').val(data.user_login_id);
-                $('[name="userid"]').val(data.userid);
-                $('[name="username"]').val(data.username);
-                $('[name="password"]').val(data.password);
-                $('[name="user_role_id"]').val(data.user_role_id);
-                $('[name="block_status"]').val(data.block_status);
-                $('#modalUserLogin').modal('show');
-                $('.modal-title').text('Edit Data Login Pengguna');
-                // console.log(data.user_role_id);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 alert('Error Get Data From Ajax');
@@ -234,75 +159,6 @@
         );
     }
 
-    function delete_user_login(id) {
-        swal({
-            title: "Apakah Yakin Akan Dihapus?",
-            icon: "warning",
-            showCancelButton: true,
-            showLoaderOnConfirm: true,
-            confirmButtonText: "Ya",
-            closeOnConfirm: false
-        }).then(
-            function() {
-                $.ajax({
-                    url: "<?php echo site_url('administrator/userLogin/delete'); ?>/" + id,
-                    type: "POST",
-                    data: {
-                        '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
-                    },
-                    dataType: "JSON",
-                    success: function(data) {
-                        updateLoginTable();
-                        return swal({
-                            html: true,
-                            timer: 1300,
-                            showConfirmButton: false,
-                            title: data['msg'],
-                            icon: data['status']
-                        });
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        alert('Error Deleting Data');
-                    }
-                });
-            }
-        );
-    }
-
-    function delete_user_role(id) {
-        swal({
-            title: "Apakah Yakin Akan Dihapus?",
-            icon: "warning",
-            showCancelButton: true,
-            showLoaderOnConfirm: true,
-            confirmButtonText: "Ya",
-            closeOnConfirm: false
-        }).then(
-            function() {
-                $.ajax({
-                    url: "<?php echo site_url('administrator/userRole/delete'); ?>/" + id,
-                    type: "POST",
-                    data: {
-                        '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
-                    },
-                    dataType: "JSON",
-                    success: function(data) {
-                        updateAllTable();
-                        return swal({
-                            html: true,
-                            timer: 1300,
-                            showConfirmButton: false,
-                            title: data['msg'],
-                            icon: data['status']
-                        });
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        alert('Error Deleting Data');
-                    }
-                });
-            }
-        );
-    }
     // End Method delete
 
     var csrf_name = '<?php echo $this->security->get_csrf_token_name(); ?>'
@@ -412,21 +268,21 @@
                                     <ul class="nav navbar-right panel_toolbox">
                                         <?php foreach ($getListCriteria as $b) { ?>
                                             <li>
-                                                <button class="btn btn-primary btn-xs" onclick="showData('<?php echo $b->support_criteria_id; ?>',1)" type="button"><i class="fa fa-list"></i> <?php echo $b->title; ?></button>
+                                                <button class="btn btn-primary btn-xs" onclick="getData(<?php echo $b->support_criteria_id; ?>)" type="button"><i class="fa fa-list"></i> <?php echo $b->title; ?></button>
                                             </li>
-                                        <?php }
-                                        ?>
+                                        <?php } ?>
                                     </ul>
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
 
-                                    <table id="lkps" class="table table-striped table-bordered">
+                                    <table id="lkpsDoc" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
                                                 <th>Nomor</th>
                                                 <th>Nama Dokumen</th>
+                                                <th>Link</th>
                                                 <th>Keterangan</th>
                                                 <th>Tools</th>
                                             </tr>
@@ -443,10 +299,9 @@
                                         <ul class="nav navbar-right panel_toolbox">
                                             <?php foreach ($getListCriteria as $b) { ?>
                                                 <li>
-                                                    <button class="btn btn-primary btn-xs" onclick="showData('<?php echo $b->support_criteria_id; ?>',2)" type="button"><i class="fa fa-list"></i> <?php echo $b->title; ?></button>
+                                                    <button class="btn btn-primary btn-xs" onclick="getData(<?php echo $b->support_criteria_id; ?>)" type="button"><i class="fa fa-list"></i> <?php echo $b->title; ?></button>
                                                 </li>
-                                            <?php }
-                                            ?>
+                                            <?php } ?>
                                         </ul>
                                     </ul>
                                     <h2>Dokumen Pendukung LED <br><small></small></h2>
@@ -454,12 +309,13 @@
                                 </div>
                                 <div class="x_content">
 
-                                    <table id="led" class="table table-striped table-bordered">
+                                    <table id="LED%20Documents" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
                                                 <th>Nomor</th>
                                                 <th>Nama Dokumen</th>
+                                                <th>Link</th>
                                                 <th>Keterangan</th>
                                                 <th>Tools</th>
                                             </tr>

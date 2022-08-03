@@ -30,6 +30,23 @@ class Model_support_master extends CI_Model
         return $this->datatables->generate();
     }
 
+    function getAllDataNoFilter()
+    {
+        $this->datatables->select('
+          a.support_master_id,
+          a.number,
+          a.title,
+          a.link,
+          a.remarks,
+          a.create_date  
+        ');
+        $this->datatables->from('support_master a');
+        $this->datatables->join('support_standard b', 'b.support_standard_id = a.support_standard_id', 'inner');
+        $this->datatables->join('support_criteria c', 'c.support_criteria_id = a.support_criteria_id', 'inner');
+        $this->datatables->join('support_documents d', 'd.support_documents_id = a.support_documents_id', 'inner');
+        return $this->datatables->generate();
+    }
+
     function addData($data)
     {
         $this->db->insert('support_master', $data);

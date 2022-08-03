@@ -775,10 +775,10 @@ class Administrator extends CI_Controller
         }
     }
 
-    function getSupportDoc($criteria = '', $kind_documents = '')
+    function getSupportDocLKPS($criteria = '')
     {
-        if ($kind_documents == 1) {
-            $dt = $this->Model_support_master->getAllData($criteria, $kind_documents);
+        if (empty($criteria)) {
+            $dt = $this->Model_support_master->getAllData();
             $start = $this->input->post('start');
             $data = array();
             foreach ($dt['data'] as $row) {
@@ -794,8 +794,8 @@ class Administrator extends CI_Controller
             $dt['data'] = $data;
             echo json_encode($dt);
             die;
-        } else if ($kind_documents == 2) {
-            $dt = $this->Model_support_master->getAllData($criteria, $kind_documents);
+        } else {
+            $dt = $this->Model_support_master->getAllData($criteria, 1);
             $start = $this->input->post('start');
             $data = array();
             foreach ($dt['data'] as $row) {
@@ -814,7 +814,7 @@ class Administrator extends CI_Controller
         }
     }
 
-    function supportDocuments($param = '', $id = '')
+    function supportDocuments($param = '', $criteria = '')
     {
         if (empty($param)) {
             ob_start();
@@ -826,6 +826,22 @@ class Administrator extends CI_Controller
             $html = ob_get_clean();
             $this->output->set_output(json_encode(array('html' => $html, 'title' => 'Assessment')));
         } else if ($param == 'getAllData') {
+            $dt = $this->Model_support_master->getAllData($criteria, 1);
+            $start = $this->input->post('start');
+            $data = array();
+            foreach ($dt['data'] as $row) {
+                $enc_id     = ($row->support_master_id);
+                $th1    = '<div class="text-center">' . ++$start . '</div>';
+                $th2    = '<div class="text-left">' . $row->number . '</div>';
+                $th3    = '<div class="text-center">' . $row->title . '</div>';
+                $th4    = '<div class="text-center">' . $row->link . '</div>';
+                $th5    = '<div class="text-center">' . $row->remarks . '</div>';
+                $th6   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('underMaintenance(' . $enc_id . ')', 'underMaintenance(' . $enc_id . ')')) . '</div>';
+                $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6));
+            }
+            $dt['data'] = $data;
+            echo json_encode($dt);
+            die;
         } else if ($param == 'insert') {
             $this->form_validation->set_rules("title", "Full Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
             $this->form_validation->set_rules("abbreviation", "Nick Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
@@ -856,46 +872,6 @@ class Administrator extends CI_Controller
                 'token' => $this->security->get_csrf_hash()
             );
             echo json_encode(array('result' => $result, 'csrf' => $csrf));
-            die;
-        } else if ($param == 'getById') {
-            $data = $this->Model_prodi->getById($id);
-            echo json_encode(array('data' => $data));
-            die;
-        } else if ($param == 'update') {
-            $this->form_validation->set_rules("title", "Full Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("abbreviation", "Nick Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("accreditation", "Initial", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("year", "NIP", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("user_id_for_kaprodi", "Email", "trim|required", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed!'));
-
-            $this->form_validation->set_error_delimiters('<small id="text-error" style="color:red;">*', '</small>');
-            if ($this->form_validation->run() == FALSE) {
-                $result = array('status' => 'error', 'msg' => 'Data yang anda isi belum benar !');
-                foreach ($_POST as $key => $value) {
-                    $result['messages'][$key] = form_error($key);
-                }
-            } else {
-                $aidi = $this->input->post('program_study_id');
-                $data = array(
-                    'title'          => htmlspecialchars($this->input->post('title')),
-                    'abbreviation'          => htmlspecialchars($this->input->post('abbreviation')),
-                    'accreditation'            => htmlspecialchars($this->input->post('accreditation')),
-                    'year'                => htmlspecialchars($this->input->post('year')),
-                    'user_id_for_kaprodi'              => htmlspecialchars($this->input->post('user_id_for_kaprodi')),
-                );
-                $result['messages']    = '';
-                $result        = array('status' => 'success', 'msg' => 'Data Berhasil diubah');
-                $this->Model_prodi->update($aidi, $data);
-            }
-            $csrf = array(
-                'token' => $this->security->get_csrf_hash()
-            );
-            echo json_encode(array('result' => $result, 'csrf' => $csrf));
-            die;
-        } else if ($param == 'delete') {
-            $this->Model_user->delete($id);
-            $result = array('status' => 'success', 'msg' => 'Data berhasil dihapus !');
-            echo json_encode(array('result' => $result));
             die;
         }
     }
