@@ -6,36 +6,6 @@
         table.ajax.reload(null, false);
     }
 
-    $(document).ready(function() {
-        tableNoFilter.destroy();
-
-        tableNoFilter = $('#lkpsDoc').DataTable({
-
-            "processing": true,
-            "serverSide": true,
-            "lengthMenu": [
-                [10, 25, 50, -1],
-                [10, 25, 50, "All"]
-            ],
-            "responsive": true,
-            "dataType": 'JSON',
-            "ajax": {
-                "url": "<?php echo site_url('administrator/getSupportDocLKPS'); ?>",
-                "type": "POST",
-                "data": {
-                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
-                }
-            },
-            "order": [
-                [0, "desc"]
-            ],
-            "columnDefs": [{
-                "targets": [0],
-                "className": "center"
-            }]
-        });
-    });
-
     function getData(criteria_id) {
         table.destroy();
 
