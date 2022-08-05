@@ -229,7 +229,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Dokumen</th>
-                                    <!-- <th>Link</th> -->
+                                    <th>Link</th>
                                     <th>Keterangan</th>
                                     <th>Tools</th>
                                 </tr>
@@ -265,13 +265,13 @@
                                 <input type="text" id="title" name="title" placeholder="Judul Dokumen" required="required" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
-                        <!-- <div class="item form-group">
+                        <div class="item form-group">
                             <label class="control-label col-md-2 col-sm-2 col-xs-12">Link <span class="required">*</span>
                             </label>
                             <div class="col-md-10 col-sm-10 col-xs-12">
                                 <input type="text" id="link" name="link" required="required" placeholder="Link" data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
                             </div>
-                        </div> -->
+                        </div>
                         <div class="item form-group">
                             <label class="control-label col-md-2 col-sm-2 col-xs-12">Remarks <span class="required">*</span>
                             </label>

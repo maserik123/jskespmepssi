@@ -16,6 +16,7 @@ class Model_accreditation extends CI_Model
         $this->datatables->select('
        accreditation_document_id,
        title,
+       link,
        remarks,
        create_date');
         $this->datatables->from('accreditation_document');

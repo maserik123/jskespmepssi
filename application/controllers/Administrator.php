@@ -190,10 +190,11 @@ class Administrator extends CI_Controller
                     $result['messages'][$key] = form_error($key);
                 }
             } else {
+                $password = md5(htmlspecialchars($this->input->post('password')));
                 $data = array(
                     'userid'           => htmlspecialchars($this->input->post('userid')),
                     'username'         => htmlspecialchars($this->input->post('username')),
-                    'password'         => htmlspecialchars($this->input->post('password')),
+                    'password'         => $password,
                     'user_role_id'     => htmlspecialchars($this->input->post('user_role_id')),
                     'block_status'     => htmlspecialchars($this->input->post('block_status')),
                 );
@@ -227,10 +228,12 @@ class Administrator extends CI_Controller
                 }
             } else {
                 $aidi = $this->input->post('user_login_id');
+                $password = md5(htmlspecialchars($this->input->post('password')));
+
                 $data = array(
                     'userid'           => htmlspecialchars($this->input->post('userid')),
                     'username'         => htmlspecialchars($this->input->post('username')),
-                    'password'         => htmlspecialchars($this->input->post('password')),
+                    'password'         => $password,
                     'user_role_id'     => htmlspecialchars($this->input->post('user_role_id')),
                     'block_status'     => htmlspecialchars($this->input->post('block_status')),
                 );
@@ -714,17 +717,18 @@ class Administrator extends CI_Controller
                 $enc_id     = $row->accreditation_document_id;
                 $th1    = '<div class="text-center">' . ++$start . '</div>';
                 $th2    = '<div class="text-left">' . $row->title . '</div>';
-                // $th3    = '<div class="text-center">' . $row->link . '</div>';
+                $th3    = '<div class="text-center"><a target="blank" href="' . $row->link . '" class="btn btn-xs btn-primary">Lihat Dokumen</a></div>';
                 $th4    = '<div class="text-center">' . $row->remarks . '</div>';
                 $th5   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('update(' . $enc_id . ')', 'hapus(' . $enc_id . ')')) . '</div>';
-                $data[] = gathered_data(array($th1, $th2, $th4, $th5));
+                $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5));
             }
             $dt['data'] = $data;
             echo json_encode($dt);
             die;
         } else if ($param == 'insert') {
             $this->form_validation->set_rules("title", "Judul Dokumen", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("remarks", "Keterangan", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("link", "Link Dokumen", "trim|required", array('required' => '{field} cannot be null !'));
+            $this->form_validation->set_rules("remarks", "Keterangan", "trim|required", array('required' => '{field} cannot be null !'));
             $this->form_validation->set_error_delimiters('<h6 id="text-error" class="help-block help-block-error">* ', '</h6>');
             if ($this->form_validation->run() == FALSE) {
                 $result = array('status' => 'error', 'msg' => 'Data Belum tepat, Silahkan cek kembali.');
@@ -753,7 +757,8 @@ class Administrator extends CI_Controller
             die;
         } else if ($param == 'update') {
             $this->form_validation->set_rules("title", "Judul Dokumen", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("remarks", "Keterangan", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("link", "Link Dokumen", "trim|required", array('required' => '{field} cannot be null !'));
+            $this->form_validation->set_rules("remarks", "Keterangan", "trim|required", array('required' => '{field} cannot be null !'));
 
             $this->form_validation->set_error_delimiters('<small id="text-error" style="color:red;">*', '</small>');
             if ($this->form_validation->run() == FALSE) {
