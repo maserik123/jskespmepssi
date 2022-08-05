@@ -148,5 +148,8 @@ $autoload['model'] = array(
     'Model_prodi_lecturer',
     'Model_support_documents',
     'Model_support_criteria',
-    'Model_support_master'
+    'Model_support_master',
+    'Model_support_standard',
+    'Model_accreditation_members',
+    'Model_configuration_video'
 );

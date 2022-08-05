@@ -30,7 +30,7 @@ class Model_support_master extends CI_Model
         return $this->datatables->generate();
     }
 
-    function getAllDataNoFilter()
+    function getAllDataNoFilter($support_documents_id)
     {
         $this->datatables->select('
           a.support_master_id,
@@ -44,6 +44,8 @@ class Model_support_master extends CI_Model
         $this->datatables->join('support_standard b', 'b.support_standard_id = a.support_standard_id', 'inner');
         $this->datatables->join('support_criteria c', 'c.support_criteria_id = a.support_criteria_id', 'inner');
         $this->datatables->join('support_documents d', 'd.support_documents_id = a.support_documents_id', 'inner');
+        $this->datatables->where('a.support_documents_id', $support_documents_id);
+
         return $this->datatables->generate();
     }
 

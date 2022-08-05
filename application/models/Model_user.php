@@ -10,6 +10,7 @@ class Model_user extends CI_Model
         return $this->db->get()->result();
     }
 
+
     function getListData()
     {
         $listUser = $this->db->from('user')->get()->result();

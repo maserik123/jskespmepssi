@@ -27,6 +27,8 @@ class Administrator extends CI_Controller
             $view['title'] = 'Home';
             $view['pageName'] = 'home';
             $view['getListData'] = $this->Model_user->getListData();
+            $view['listVideo'] = $this->Model_configuration_video->getData();
+
             $this->load->view('index', $view);
         }
     }
@@ -261,7 +263,11 @@ class Administrator extends CI_Controller
                 $th1    = '<div class="text-center">' . ++$start . '</div>';
                 $th2    = '<div class="text-left">' . $row->role . '</div>';
                 $th3    = '<div class="text-center">' . $row->description . '</div>';
-                $th4   = '<div class="text-center" style="width:100px;">' . get_btn_group1('update_user_role(' . $user_role_id . ')', 'delete_user_role(' . $user_role_id . ')') . '</div>';
+                if ($row->role == 'sys_manager') {
+                    $th4   = '<div class="text-center" style="width:100px;"> </div>';
+                } else {
+                    $th4   = '<div class="text-center" style="width:100px;">' . get_btn_group1('update_user_role(' . $user_role_id . ')', 'delete_user_role(' . $user_role_id . ')') . '</div>';
+                }
                 $data[] = gathered_data(array($th1, $th2, $th3, $th4));
             }
             $dt['data'] = $data;
@@ -335,37 +341,13 @@ class Administrator extends CI_Controller
     {
         if (empty($param)) {
             ob_start();
-            $this->load->view('pages/configuration');
+            $view['listVideo'] = $this->Model_configuration_video->getData();
+            $this->load->view('pages/configuration', $view);
             $html = ob_get_clean();
             echo json_encode(array('html' => $html, 'title' => 'Users'));
-        } else if ($param == 'getAllData') {
-            $dt = $this->Model_user->getAllData();
-            $start = $this->input->post('start');
-            $data = array();
-            foreach ($dt['data'] as $row) {
-                $enc_id     = encrypt($row->userid);
-                $th1    = '<div class="text-center">' . ++$start . '</div>';
-                $th2    = '<div class="text-left">' . $row->full_name . '</div>';
-                $th3    = '<div class="text-center">' . $row->nick_name . '</div>';
-                $th4    = '<div class="text-center">' . $row->initial . '</div>';
-                $th5    = '<div class="text-center">' . $row->NIP . '</div>';
-                $th6    = '<div class="text-center">' . $row->email . '</div>';
-                $th7    = '<div class="text-center">' . $row->address . '</div>';
-                $th8    = '<div class="text-center">' . $row->phone_number . '</div>';
-                $th9   = '<div class="text-center" style="width:100px;">' . (get_btn_group('underMaintenance()', 'underMaintenance()', 'underMaintenance()')) . '</div>';
-                $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7, $th8, $th9));
-            }
-            $dt['data'] = $data;
-            echo json_encode($dt);
-            die;
         } else if ($param == 'insert') {
-            $this->form_validation->set_rules("full_name", "Full Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("nick_name", "Nick Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("initial", "Initial", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("NIP", "NIP", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("email", "Email", "trim|required", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed!'));
-            $this->form_validation->set_rules("address", "Address", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("phone_number", "Phone Number", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("title", "Judul", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("url", "Token Youtube", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
 
             $this->form_validation->set_error_delimiters('<h6 id="text-error" class="help-block help-block-error">* ', '</h6>');
             if ($this->form_validation->run() == FALSE) {
@@ -375,25 +357,53 @@ class Administrator extends CI_Controller
                 }
             } else {
                 $data = array(
-                    'full_name'                => htmlspecialchars($this->input->post('full_name')),
-                    'nick_name'                => htmlspecialchars($this->input->post('nick_name')),
-                    'initial'                => htmlspecialchars($this->input->post('initial')),
-                    'NIP'                => htmlspecialchars($this->input->post('NIP')),
-                    'email'                => htmlspecialchars($this->input->post('email')),
-                    'address'                => htmlspecialchars($this->input->post('address')),
-                    'phone_number'                => htmlspecialchars($this->input->post('phone_number')),
-
+                    'title'                => htmlspecialchars($this->input->post('title')),
+                    'url'                => htmlspecialchars($this->input->post('url')),
                 );
                 $result['messages'] = '';
                 $result = array('status' => 'success', 'msg' => 'Data Inserted!');
-                $this->Model_user->addData($data);
-                // $this->B_user_log_model->addLog(userLog('Add Data', $this->session->userdata('first_name') . ' Add data Tracer Study Program Study', $this->session->userdata('id')));
+                $this->Model_configuration_video->addData($data);
             }
 
             $csrf = array(
                 'token' => $this->security->get_csrf_hash()
             );
             echo json_encode(array('result' => $result, 'csrf' => $csrf));
+            die;
+        } else if ($param == 'getById') {
+            $data = $this->Model_configuration_video->getById($id);
+            echo json_encode(array('data' => $data));
+            die;
+        } else if ($param == 'update') {
+            $this->form_validation->set_rules("title", "Judul", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("url", "Token Youtube", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            // $this->form_validation->set_rules("team_total", "Total Team", "trim|required", array('required' => '{field} cannot be null !'));
+            $this->form_validation->set_error_delimiters('<small id="text-error" style="color:red;">*', '</small>');
+            if ($this->form_validation->run() == FALSE) {
+                $result = array('status' => 'error', 'msg' => 'Data yang anda isi belum benar !');
+                foreach ($_POST as $key => $value) {
+                    $result['messages'][$key] = form_error($key);
+                }
+            } else {
+                $aidi = $this->input->post('configuration_video_id');
+                $data = array(
+                    'title'                => htmlspecialchars($this->input->post('title')),
+                    'url'                => htmlspecialchars($this->input->post('url')),
+                    // 'team_total'                => htmlspecialchars($this->input->post('team_total')),
+                );
+                $result['messages']    = '';
+                $result        = array('status' => 'success', 'msg' => 'Data Berhasil diubah');
+                $this->Model_configuration_video->update($aidi, $data);
+            }
+            $csrf = array(
+                'token' => $this->security->get_csrf_hash()
+            );
+            echo json_encode(array('result' => $result, 'csrf' => $csrf));
+            die;
+        } else if ($param == 'delete') {
+            $this->Model_configuration_video->delete($id);
+            $result = array('status' => 'success', 'msg' => 'Data berhasil dihapus !');
+            echo json_encode(array('result' => $result));
             die;
         }
     }
@@ -777,8 +787,8 @@ class Administrator extends CI_Controller
 
     function getSupportDocLKPS($criteria = '')
     {
-        if (empty($criteria)) {
-            $dt = $this->Model_support_master->getAllData();
+        if ($criteria == '') {
+            $dt = $this->Model_support_master->getAllDataNoFilter(1);
             $start = $this->input->post('start');
             $data = array();
             foreach ($dt['data'] as $row) {
@@ -786,9 +796,9 @@ class Administrator extends CI_Controller
                 $th1    = '<div class="text-center">' . ++$start . '</div>';
                 $th2    = '<div class="text-left">' . $row->number . '</div>';
                 $th3    = '<div class="text-center">' . $row->title . '</div>';
-                $th4    = '<div class="text-center">' . $row->link . '</div>';
+                $th4    = '<div class="text-center"><a href="' . $row->link . '" target="blank" class="btn btn-success btn-xs">Lihat Dokumen </a></div>';
                 $th5    = '<div class="text-center">' . $row->remarks . '</div>';
-                $th6   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('underMaintenance(' . $enc_id . ')', 'underMaintenance(' . $enc_id . ')')) . '</div>';
+                $th6   = '<div class="text-center" style="width:100px;">' . (get_btn_group('update_link(' . $enc_id . ')', 'update(' . $enc_id . ')', 'deleteDocument(' . $enc_id . ')')) . '</div>';
                 $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6));
             }
             $dt['data'] = $data;
@@ -803,9 +813,9 @@ class Administrator extends CI_Controller
                 $th1    = '<div class="text-center">' . ++$start . '</div>';
                 $th2    = '<div class="text-left">' . $row->number . '</div>';
                 $th3    = '<div class="text-center">' . $row->title . '</div>';
-                $th4    = '<div class="text-center">' . $row->link . '</div>';
+                $th4    = '<div class="text-center"><a href="' . $row->link . '" target="blank" class="btn btn-success btn-xs">Lihat Dokumen </a></div>';
                 $th5    = '<div class="text-center">' . $row->remarks . '</div>';
-                $th6   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('underMaintenance(' . $enc_id . ')', 'underMaintenance(' . $enc_id . ')')) . '</div>';
+                $th6   = '<div class="text-center" style="width:100px;">' . (get_btn_group('update_link(' . $enc_id . ')', 'update(' . $enc_id . ')', 'deleteDocument(' . $enc_id . ')')) . '</div>';
                 $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6));
             }
             $dt['data'] = $data;
@@ -814,19 +824,10 @@ class Administrator extends CI_Controller
         }
     }
 
-    function supportDocuments($param = '', $criteria = '')
+    function getSupportDocLED($criteria = '')
     {
-        if (empty($param)) {
-            ob_start();
-            $title['title'] = '';
-            $view['getListProdi'] = $this->Model_prodi->getData();
-            $view['getDocument'] = $this->Model_support_documents->getData();
-            $view['getListCriteria'] = $this->Model_support_criteria->getData();
-            $this->load->view('pages/supportDocuments', $view);
-            $html = ob_get_clean();
-            $this->output->set_output(json_encode(array('html' => $html, 'title' => 'Assessment')));
-        } else if ($param == 'getAllData') {
-            $dt = $this->Model_support_master->getAllData($criteria, 1);
+        if ($criteria == '') {
+            $dt = $this->Model_support_master->getAllDataNoFilter(2);
             $start = $this->input->post('start');
             $data = array();
             foreach ($dt['data'] as $row) {
@@ -834,20 +835,56 @@ class Administrator extends CI_Controller
                 $th1    = '<div class="text-center">' . ++$start . '</div>';
                 $th2    = '<div class="text-left">' . $row->number . '</div>';
                 $th3    = '<div class="text-center">' . $row->title . '</div>';
-                $th4    = '<div class="text-center">' . $row->link . '</div>';
+                $th4    = '<div class="text-center"><a href="' . $row->link . '" target="blank" class="btn btn-success btn-xs">Lihat Dokumen </a></div>';
                 $th5    = '<div class="text-center">' . $row->remarks . '</div>';
-                $th6   = '<div class="text-center" style="width:100px;">' . (get_btn_group1('underMaintenance(' . $enc_id . ')', 'underMaintenance(' . $enc_id . ')')) . '</div>';
+                $th6   = '<div class="text-center" style="width:100px;">' . (get_btn_group('update_link(' . $enc_id . ')', 'update(' . $enc_id . ')', 'deleteDocument(' . $enc_id . ')')) . '</div>';
                 $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6));
             }
             $dt['data'] = $data;
             echo json_encode($dt);
             die;
+        } else {
+            $dt = $this->Model_support_master->getAllData($criteria, 2);
+            $start = $this->input->post('start');
+            $data = array();
+            foreach ($dt['data'] as $row) {
+                $enc_id     = ($row->support_master_id);
+                $th1    = '<div class="text-center">' . ++$start . '</div>';
+                $th2    = '<div class="text-left">' . $row->number . '</div>';
+                $th3    = '<div class="text-center">' . $row->title . '</div>';
+                $th4    = '<div class="text-center"><a href="' . $row->link . '" target="blank" class="btn btn-success btn-xs">Lihat Dokumen </a></div>';
+                $th5    = '<div class="text-center">' . $row->remarks . '</div>';
+                $th6   = '<div class="text-center" style="width:100px;">' . (get_btn_group('update_link(' . $enc_id . ')', 'update(' . $enc_id . ')', 'deleteDocument(' . $enc_id . ')')) . '</div>';
+                $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6));
+            }
+            $dt['data'] = $data;
+            echo json_encode($dt);
+            die;
+        }
+    }
+
+    function supportDocuments($param = '', $id = '')
+    {
+        if (empty($param)) {
+            ob_start();
+            $title['title'] = '';
+            $view['getListProdi'] = $this->Model_prodi->getData();
+            $view['getStandard'] = $this->Model_support_standard->getData();
+            $view['getKindDocument'] = $this->Model_support_documents->getData();
+
+            $view['getListCriteria'] = $this->Model_support_criteria->getData();
+            $this->load->view('pages/supportDocuments', $view);
+            $html = ob_get_clean();
+            $this->output->set_output(json_encode(array('html' => $html, 'title' => 'Assessment')));
         } else if ($param == 'insert') {
-            $this->form_validation->set_rules("title", "Full Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("abbreviation", "Nick Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("accreditation", "Initial", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("year", "NIP", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("user_id_for_kaprodi", "Email", "trim|required", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed!'));
+            $this->form_validation->set_rules("support_criteria_id", "Kriteria", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("support_standard_id", "Standard Dokumen", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("support_documents_id", "Jenis Dokumen", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("number", "Nomor", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("title", "Judul", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("link", "Link", "trim", array('required' => '{field} cannot be null !'));
+            $this->form_validation->set_rules("remarks", "Keterangan", "trim|required", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed!'));
+
             $this->form_validation->set_error_delimiters('<h6 id="text-error" class="help-block help-block-error">* ', '</h6>');
             if ($this->form_validation->run() == FALSE) {
                 $result = array('status' => 'error', 'msg' => 'Data is not right, please check again.');
@@ -856,22 +893,67 @@ class Administrator extends CI_Controller
                 }
             } else {
                 $data = array(
-                    'title'          => htmlspecialchars($this->input->post('title')),
-                    'abbreviation'          => htmlspecialchars($this->input->post('abbreviation')),
-                    'accreditation'            => htmlspecialchars($this->input->post('accreditation')),
-                    'year'                => htmlspecialchars($this->input->post('year')),
-                    'user_id_for_kaprodi'              => htmlspecialchars($this->input->post('user_id_for_kaprodi')),
+                    'support_criteria_id'          => htmlspecialchars($this->input->post('support_criteria_id')),
+                    'support_standard_id'          => htmlspecialchars($this->input->post('support_standard_id')),
+                    'support_documents_id'            => htmlspecialchars($this->input->post('support_documents_id')),
+                    'number'                => htmlspecialchars($this->input->post('number')),
+                    'title'              => htmlspecialchars($this->input->post('title')),
+                    'link'              => htmlspecialchars($this->input->post('link')),
+                    'remarks'              => htmlspecialchars($this->input->post('remarks')),
                 );
                 $result['messages'] = '';
-                $result = array('status' => 'success', 'msg' => 'Data Inserted!');
-                $this->Model_prodi->addData($data);
-                // $this->B_user_log_model->addLog(userLog('Add Data', $this->session->userdata('first_name') . ' Add data Tracer Study Program Study', $this->session->userdata('id')));
+                $result = array('status' => 'success', 'msg' => 'Data Berhasil masuk!');
+                $this->Model_support_master->addData($data);
             }
 
             $csrf = array(
                 'token' => $this->security->get_csrf_hash()
             );
             echo json_encode(array('result' => $result, 'csrf' => $csrf));
+            die;
+        } else if ($param == 'getById') {
+            $data = $this->Model_support_master->getById($id);
+            echo json_encode(array('data' => $data));
+            die;
+        } else if ($param == 'update') {
+            $this->form_validation->set_rules("support_criteria_id", "Kriteria", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("support_standard_id", "Standard Dokumen", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("support_documents_id", "Jenis Dokumen", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("number", "Nomor", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("title", "Judul", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("link", "Link", "trim|required", array('required' => '{field} cannot be null !'));
+            $this->form_validation->set_rules("remarks", "Keterangan", "trim|required", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed!'));
+
+            $this->form_validation->set_error_delimiters('<small id="text-error" style="color:red;">*', '</small>');
+            if ($this->form_validation->run() == FALSE) {
+                $result = array('status' => 'error', 'msg' => 'Data yang anda isi belum benar !');
+                foreach ($_POST as $key => $value) {
+                    $result['messages'][$key] = form_error($key);
+                }
+            } else {
+                $aidi = $this->input->post('support_master_id');
+                $data = array(
+                    'support_criteria_id'          => htmlspecialchars($this->input->post('support_criteria_id')),
+                    'support_standard_id'          => htmlspecialchars($this->input->post('support_standard_id')),
+                    'support_documents_id'            => htmlspecialchars($this->input->post('support_documents_id')),
+                    'number'                => htmlspecialchars($this->input->post('number')),
+                    'title'              => htmlspecialchars($this->input->post('title')),
+                    'link'              => htmlspecialchars($this->input->post('link')),
+                    'remarks'              => htmlspecialchars($this->input->post('remarks')),
+                );
+                $result['messages']    = '';
+                $result        = array('status' => 'success', 'msg' => 'Data Berhasil diubah');
+                $this->Model_support_master->update($aidi, $data);
+            }
+            $csrf = array(
+                'token' => $this->security->get_csrf_hash()
+            );
+            echo json_encode(array('result' => $result, 'csrf' => $csrf));
+            die;
+        } else if ($param == 'delete') {
+            $this->Model_support_master->delete($id);
+            $result = array('status' => 'success', 'msg' => 'Data berhasil dihapus !');
+            echo json_encode(array('result' => $result));
             die;
         }
     }
@@ -881,51 +963,30 @@ class Administrator extends CI_Controller
         if (empty($param)) {
             ob_start();
             $title['title'] = '';
-            $view['getListProdi'] = $this->Model_prodi->getData();
+            $view['getMember'] = $this->Model_accreditation_members->getData();
+            $view['listUser'] = $this->Model_user->getData();
+            $view['listUserRole'] = $this->Model_user_role->getDataExceptSysManager();
+
             $this->load->view('pages/accreditationTeam', $view);
             $html = ob_get_clean();
             $this->output->set_output(json_encode(array('html' => $html, 'title' => 'Assessment')));
-        } else if ($param == 'getDataProdi') {
-            $dt = $this->Model_prodi->getAllData();
-            $start = $this->input->post('start');
-            $data = array();
-            foreach ($dt['data'] as $row) {
-                $enc_id     = encrypt($row->assessment_schedule_id);
-                $th1    = '<div class="text-center">' . ++$start . '</div>';
-                $th2    = '<div class="text-left">' . $row->title . '</div>';
-                $th3    = '<div class="text-center">' . $row->abbreviation . '</div>';
-                $th4    = '<div class="text-center">' . $row->accreditation . '</div>';
-                $th5    = '<div class="text-center">' . $row->year . '</div>';
-                $th6    = '<div class="text-center">' . $row->kaprodi_name . '</div>';
-                $th7   = '<div class="text-center" style="width:100px;">' . (get_btn_group('underMaintenance()', 'underMaintenance()', 'underMaintenance()')) . '</div>';
-                $data[] = gathered_data(array($th1, $th2, $th3, $th4, $th5, $th6, $th7));
-            }
-            $dt['data'] = $data;
-            echo json_encode($dt);
-            die;
         } else if ($param == 'insert') {
-            $this->form_validation->set_rules("title", "Full Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("abbreviation", "Nick Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("accreditation", "Initial", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("year", "NIP", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("user_id_for_kaprodi", "Email", "trim|required", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed!'));
+            $this->form_validation->set_rules("userid", "Pilih Pegawai", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("user_role_id", "Level Pengguna", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
             $this->form_validation->set_error_delimiters('<h6 id="text-error" class="help-block help-block-error">* ', '</h6>');
             if ($this->form_validation->run() == FALSE) {
-                $result = array('status' => 'error', 'msg' => 'Data is not right, please check again.');
+                $result = array('status' => 'error', 'msg' => 'Data tidak benar, silahkan cek kembali !');
                 foreach ($_POST as $key => $value) {
                     $result['messages'][$key] = form_error($key);
                 }
             } else {
                 $data = array(
-                    'title'          => htmlspecialchars($this->input->post('title')),
-                    'abbreviation'          => htmlspecialchars($this->input->post('abbreviation')),
-                    'accreditation'            => htmlspecialchars($this->input->post('accreditation')),
-                    'year'                => htmlspecialchars($this->input->post('year')),
-                    'user_id_for_kaprodi'              => htmlspecialchars($this->input->post('user_id_for_kaprodi')),
+                    'userid'          => htmlspecialchars($this->input->post('userid')),
+                    'user_role_id'           => htmlspecialchars($this->input->post('user_role_id')),
                 );
                 $result['messages'] = '';
-                $result = array('status' => 'success', 'msg' => 'Data Inserted!');
-                $this->Model_prodi->addData($data);
+                $result = array('status' => 'success', 'msg' => 'Data Telah masuk!');
+                $this->Model_accreditation_members->addData($data);
                 // $this->B_user_log_model->addLog(userLog('Add Data', $this->session->userdata('first_name') . ' Add data Tracer Study Program Study', $this->session->userdata('id')));
             }
 
@@ -935,15 +996,12 @@ class Administrator extends CI_Controller
             echo json_encode(array('result' => $result, 'csrf' => $csrf));
             die;
         } else if ($param == 'getById') {
-            $data = $this->Model_prodi->getById($id);
+            $data = $this->Model_accreditation_members->getById($id);
             echo json_encode(array('data' => $data));
             die;
         } else if ($param == 'update') {
-            $this->form_validation->set_rules("title", "Full Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("abbreviation", "Nick Name", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("accreditation", "Initial", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("year", "NIP", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
-            $this->form_validation->set_rules("user_id_for_kaprodi", "Email", "trim|required", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed!'));
+            $this->form_validation->set_rules("userid", "Pilih Pegawai", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
+            $this->form_validation->set_rules("user_role_id", "Pilih Level", "trim|required|alpha_numeric_spaces", array('required' => '{field} cannot be null !', 'alpha_numeric_spaces' => 'Character not allowed !'));
 
             $this->form_validation->set_error_delimiters('<small id="text-error" style="color:red;">*', '</small>');
             if ($this->form_validation->run() == FALSE) {
@@ -952,17 +1010,14 @@ class Administrator extends CI_Controller
                     $result['messages'][$key] = form_error($key);
                 }
             } else {
-                $aidi = $this->input->post('program_study_id');
+                $aidi = $this->input->post('accreditation_members_id');
                 $data = array(
-                    'title'          => htmlspecialchars($this->input->post('title')),
-                    'abbreviation'          => htmlspecialchars($this->input->post('abbreviation')),
-                    'accreditation'            => htmlspecialchars($this->input->post('accreditation')),
-                    'year'                => htmlspecialchars($this->input->post('year')),
-                    'user_id_for_kaprodi'              => htmlspecialchars($this->input->post('user_id_for_kaprodi')),
+                    'userid'          => htmlspecialchars($this->input->post('userid')),
+                    'user_role_id'    => htmlspecialchars($this->input->post('user_role_id')),
                 );
                 $result['messages']    = '';
                 $result        = array('status' => 'success', 'msg' => 'Data Berhasil diubah');
-                $this->Model_prodi->update($aidi, $data);
+                $this->Model_accreditation_members->update($aidi, $data);
             }
             $csrf = array(
                 'token' => $this->security->get_csrf_hash()
@@ -970,7 +1025,7 @@ class Administrator extends CI_Controller
             echo json_encode(array('result' => $result, 'csrf' => $csrf));
             die;
         } else if ($param == 'delete') {
-            $this->Model_user->delete($id);
+            $this->Model_accreditation_members->delete($id);
             $result = array('status' => 'success', 'msg' => 'Data berhasil dihapus !');
             echo json_encode(array('result' => $result));
             die;

@@ -2,11 +2,69 @@
     var id;
     var id_criteria;
 
-    function updateAllTable() {
+    function updateTableLKPS() {
         table.ajax.reload(null, false);
     }
 
-    function getData(criteria_id) {
+    function updateTableLED() {
+        tableLED.ajax.reload(null, false);
+    }
+
+    $(document).ready(function() {
+        table = $('#lkpsDoc').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            "responsive": false,
+            "dataType": 'JSON',
+            "ajax": {
+                "url": "<?php echo site_url('administrator/getSupportDocLKPS') ?>",
+                "type": "POST",
+                "data": {
+                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                }
+            },
+            "order": [
+                [0, "desc"]
+            ],
+            "columnDefs": [{
+                "targets": [0],
+                "className": "center"
+            }]
+        });
+    });
+
+    $(document).ready(function() {
+        tableLED = $('#ledDoc').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            "responsive": false,
+            "dataType": 'JSON',
+            "ajax": {
+                "url": "<?php echo site_url('administrator/getSupportDocLED') ?>",
+                "type": "POST",
+                "data": {
+                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                }
+            },
+            "order": [
+                [0, "desc"]
+            ],
+            "columnDefs": [{
+                "targets": [0],
+                "className": "center"
+            }]
+        });
+    });
+
+    function getDataLKPS(criteria_id) {
         table.destroy();
 
         table = $('#lkpsDoc').DataTable({
@@ -39,51 +97,142 @@
 
     }
 
+    function getDataLED(criteria_id) {
+        tableLED.destroy();
+
+        tableLED = $('#ledDoc').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            "responsive": true,
+            "dataType": 'JSON',
+            "ajax": {
+
+                "url": "<?php echo site_url('administrator/getSupportDocLED/'); ?>" + criteria_id,
+                "type": "POST",
+                "data": {
+                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                }
+            },
+            "order": [
+                [0, "desc"]
+            ],
+
+            "columnDefs": [{
+                "targets": [0],
+                "className": "center",
+
+            }]
+        });
+
+    }
+
     var save_method;
-    var save_method_role;
-    var save_method_login;
 
 
     // Start Method add
-    function addUser() {
+    function add() {
         save_method = 'add';
-        $('.modal-title').text(' Add Data Users');
+        $('.modal-title').text(' Add Data Support Documents');
         $('.reset-btn').show();
         $('.form-group')
             .removeClass('has-error')
             .removeClass('has-success')
             .find('#text-error')
             .remove();
-        $('#modalUser').modal('show');
+        $('#modalDoc').modal('show');
+        $("#form-doc")[0].reset();
+        $('#label-link').hide();
+        $('#link').hide();
 
     }
 
     // End method add
 
     // Start Method Update
-    function update_user(id) {
+    function update(id) {
         save_method = 'update';
-        $('#form-user')[0].reset();
 
         //Load data dari ajax
         $.ajax({
-            url: "<?php echo base_url('administrator/user/getById/'); ?>/" + id,
+            url: "<?php echo base_url('administrator/supportDocuments/getById/'); ?>/" + id,
             type: "GET",
             dataType: "JSON",
             success: function(resp) {
+
+                $('#label-support_criteria_id').show();
+                $('#label-support_standard_id').show();
+                $('#label-support_documents_id').show();
+                $('#label-number').show();
+                $('#label-link').hide();
+                $('#label-title').show();
+                $('#label-remarks').show();
+
+                $('#support_criteria_id').show();
+                $('#support_standard_id').show();
+                $('#support_documents_id').show();
+                $('#number').show();
+                $('#link').hide();
+                $('#title').show();
+                $('#remarks').show();
                 data = resp.data
-                $('[name="userid"]').val(data.userid);
-                $('[name="full_name"]').val(data.full_name);
-                $('[name="nick_name"]').val(data.nick_name);
-                $('[name="initial"]').val(data.initial);
-                $('[name="NIP"]').val(data.NIP);
-                $('[name="email"]').val(data.email);
-                $('[name="address"]').val(data.address);
-                $('[name="phone_number"]').val(data.phone_number);
-                $('#modalUser').modal('show');
-                $('.modal-title').text('Edit Data Pengguna');
-                console.log(data.userid);
-                updateAllTable();
+                $('[name="support_master_id"]').val(data.support_master_id);
+                $('[name="support_criteria_id"]').val(data.support_criteria_id);
+                $('[name="support_standard_id"]').val(data.support_standard_id);
+                $('[name="support_documents_id"]').val(data.support_documents_id);
+                $('[name="number"]').val(data.number);
+                $('[name="title"]').val(data.title);
+                $('[name="link"]').val(data.link);
+                $('[name="remarks"]').val(data.remarks);
+                $('#modalDoc').modal('show');
+                $('.modal-title').text('Edit Dokumen Pendukung');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error Get Data From Ajax');
+            }
+        });
+    }
+
+    function update_link(id) {
+        save_method = 'update';
+
+        //Load data dari ajax
+        $.ajax({
+            url: "<?php echo base_url('administrator/supportDocuments/getById/'); ?>/" + id,
+            type: "GET",
+            dataType: "JSON",
+            success: function(resp) {
+
+                $('#label-support_criteria_id').hide();
+                $('#label-support_standard_id').hide();
+                $('#label-support_documents_id').hide();
+                $('#label-number').hide();
+                $('#label-title').hide();
+                $('#label-remarks').hide();
+                $('#label-link').show();
+                $('#label-link').text(' Dokumen Upload');
+                $('#link').show();
+
+                $('#support_criteria_id').hide();
+                $('#support_standard_id').hide();
+                $('#support_documents_id').hide();
+                $('#number').hide();
+                $('#title').hide();
+                $('#remarks').hide();
+                data = resp.data
+                $('[name="support_master_id"]').val(data.support_master_id);
+                $('[name="support_criteria_id"]').val(data.support_criteria_id);
+                $('[name="support_standard_id"]').val(data.support_standard_id);
+                $('[name="support_documents_id"]').val(data.support_documents_id);
+                $('[name="number"]').val(data.number);
+                $('[name="title"]').val(data.title);
+                $('[name="link"]').val(data.link);
+                $('[name="remarks"]').val(data.remarks);
+                $('#modalDoc').modal('show');
+                $('.modal-title').text('Tambahkan Link Dokumen Anda');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 alert('Error Get Data From Ajax');
@@ -94,39 +243,48 @@
     // End Method Update
 
     // Start Method delete
-    function delete_user(id) {
+    function deleteDocument(id) {
         swal({
             title: "Apakah Yakin Akan Dihapus?",
             icon: "warning",
-            showCancelButton: true,
-            showLoaderOnConfirm: true,
-            confirmButtonText: "Ya",
-            closeOnConfirm: false
-        }).then(
-            function() {
+            buttons: {
+                cancel: true,
+                confirm: true,
+            },
+        }).then((result) => {
+            if (result == true) {
                 $.ajax({
-                    url: "<?php echo site_url('administrator/user/delete'); ?>/" + id,
+                    url: "<?php echo site_url('administrator/supportDocuments/delete'); ?>/" + id,
                     type: "POST",
                     data: {
                         '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
                     },
                     dataType: "JSON",
-                    success: function(data) {
-                        updateUserTable();
+                    success: function(resp) {
+                        data = resp.result
+                        updateTableLKPS();
+                        updateTableLED();
                         return swal({
-                            html: true,
+                            content: true,
                             timer: 1300,
-                            showConfirmButton: false,
                             title: data['msg'],
-                            icon: data['status']
+                            icon: 'success'
                         });
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         alert('Error Deleting Data');
                     }
                 });
+            } else {
+                return swal({
+                    content: true,
+                    title: 'Transaksi telah dibatalkan !',
+                    timer: 1300,
+                    icon: 'error'
+                });
             }
-        );
+        });
+
     }
 
     // End Method delete
@@ -137,37 +295,38 @@
     function save() {
         var url;
         if (save_method == 'add') {
-            url = '<?php echo base_url() ?>administrator/user/insert';
+            url = '<?php echo base_url() ?>administrator/supportDocuments/insert';
         } else {
-            url = '<?php echo base_url() ?>administrator/user/update';
+            url = '<?php echo base_url() ?>administrator/supportDocuments/update';
         }
         swal({
-            title: "Are you sure if the data is correct?",
+            title: "Apakah anda sudah yakin ?",
             icon: "warning",
-            showCancelButton: true,
-            showLoaderOnConfirm: true,
-            confirmButtonText: "Ya",
-            closeOnConfirm: false
-        }).then(
-            function(e) {
+            buttons: {
+                cancel: true,
+                confirm: true,
+            },
+        }).then((result) => {
+            if (result == true) {
                 $.ajax({
                     url: url,
                     type: 'POST',
-                    data: $('#form-user').serialize(),
+                    data: $('#form-doc').serialize(),
                     dataType: "JSON",
                     success: function(resp) {
                         data = resp.result;
                         // csrf_hash = resp.csrf['token']
                         // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
                         if (data['status'] == 'success') {
-                            updateUserTable();
+                            updateTableLKPS();
+                            updateTableLED();
                             $('.form-group')
                                 .removeClass('has-error')
                                 .removeClass('has-success')
                                 .find('#text-error')
                                 .remove();
-                            $('#modalUser').modal('hide');
-                            $("#form-user")[0].reset();
+                            $('#modalDoc').modal('hide');
+                            $("#form-doc")[0].reset();
 
                         } else {
                             $.each(data['messages'], function(key, value) {
@@ -186,9 +345,8 @@
                             });
                         }
                         return swal({
-                            html: true,
+                            content: true,
                             timer: 1300,
-                            showConfirmButton: false,
                             title: data['msg'],
                             icon: data['status']
                         });
@@ -197,8 +355,15 @@
                         alert('Error adding/updating data');
                     }
                 });
+            } else {
+                return swal({
+                    title: 'Transaksi telah dibatalkan !',
+                    content: true,
+                    timer: 1300,
+                    icon: 'error'
+                });
             }
-        );
+        });
     }
 </script>
 
@@ -217,13 +382,13 @@
             <div class="x_title">
                 <h4><i class="fa fa-bars"></i> Dokumen Pendukung <small>System</small></h4>
                 <div class="clearfix"></div>
-                <button class="btn btn-success btn-xs" onclick="underMaintenance()" type="button"><i class="fa fa-plus"></i> Add Data</button>
+                <button class="btn btn-success btn-xs" onclick="add()" type="button"><i class="fa fa-plus"></i> Add Data</button>
             </div>
             <div class="x_content">
                 <div class="" role="tabpanel" data-example-id="togglable-tabs">
                     <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
                         <?php $no = 0;
-                        foreach ($getDocument as $row) { ?>
+                        foreach ($getKindDocument as $row) { ?>
                             <li role="presentation" class=""><a href="#tab_content<?php echo ++$no; ?>" id="user-tab" role="tab" data-toggle="tab" aria-expanded="true"><?php echo $row->title; ?></a>
                             </li>
                         <?php } ?>
@@ -238,7 +403,7 @@
                                     <ul class="nav navbar-right panel_toolbox">
                                         <?php foreach ($getListCriteria as $b) { ?>
                                             <li>
-                                                <button class="btn btn-primary btn-xs" onclick="getData(<?php echo $b->support_criteria_id; ?>)" type="button"><i class="fa fa-list"></i> <?php echo $b->title; ?></button>
+                                                <button class="btn btn-primary btn-xs" onclick="getDataLKPS(<?php echo $b->support_criteria_id; ?>)" type="button"><i class="fa fa-list"></i> <?php echo $b->title; ?></button>
                                             </li>
                                         <?php } ?>
                                     </ul>
@@ -269,7 +434,7 @@
                                         <ul class="nav navbar-right panel_toolbox">
                                             <?php foreach ($getListCriteria as $b) { ?>
                                                 <li>
-                                                    <button class="btn btn-primary btn-xs" onclick="getData(<?php echo $b->support_criteria_id; ?>)" type="button"><i class="fa fa-list"></i> <?php echo $b->title; ?></button>
+                                                    <button class="btn btn-primary btn-xs" onclick="getDataLED(<?php echo $b->support_criteria_id; ?>)" type="button"><i class="fa fa-list"></i> <?php echo $b->title; ?></button>
                                                 </li>
                                             <?php } ?>
                                         </ul>
@@ -279,7 +444,7 @@
                                 </div>
                                 <div class="x_content">
 
-                                    <table id="LED%20Documents" class="table table-striped table-bordered">
+                                    <table id="ledDoc" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
@@ -302,11 +467,8 @@
     </div>
 
 
-    <div class="col-md-12 col-sm-12 col-xs-12">
-
-    </div>
-    <!-- Modal User -->
-    <div class="modal fade" id="modalUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Modal User Role-->
+    <div class="modal fade" id="modalDoc" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -315,53 +477,71 @@
                     </button>
                     <h5 class="modal-title" id="modal-title"></h5>
                 </div>
-                <form class="form-horizontal" id="form-user" action="" method="POST">
+                <form class="form-horizontal" id="form-doc" action="" method="POST">
                     <div class="modal-body">
+                        <input type="hidden" name='support_master_id' value="" id='support_master_id'>
                         <div class="item form-group">
-                            <input type="hidden" name="support_master_id" id="support_master_id">
-                            <label class="control-label col-md-2 col-sm-2 col-xs-12 form-group">Kriteria/Standard <span class="required">*</span>
+                            <label id="label-support_criteria_id" class="control-label col-md-3 col-sm-3 col-xs-12">Kriteria <span class="required">*</span>
                             </label>
-                            <div class="col-md-5 col-sm-5 col-xs-12 form-group">
-                                <input id="support_criteria_id" class="form-control col-md-3 col-xs-12" name="support_criteria_id" placeholder="Kriteria" required="required" type="text">
-                            </div>
-                            <div class="col-md-5 col-sm-5 col-xs-12 form-group">
-                                <input id="support_standard_id" class="form-control col-md-3 col-xs-12" name="support_standard_id" placeholder="Standar" required="required" type="text">
-                            </div>
-                        </div>
-                        <div class="item form-group">
-                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Pilih Dokumen Pendukung <span class="required">*</span>
-                            </label>
-                            <div class="col-md-10 col-sm-10 col-xs-12">
-                                <select name="support_documents_id" id="support_documents_id" class="form-control"></select>
-                                <input type="email" id="email" name="email" data-validate-linked="email" placeholder="Email" required="required" class="form-control col-md-7 col-xs-12">
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <select name="support_criteria_id" id="support_criteria_id" class="form-control">
+                                    <option value="">Pilih Kriteria</option>
+                                    <?php foreach ($getListCriteria as $row) { ?>
+                                        <option value="<?php echo $row->support_criteria_id; ?>"><?php echo $row->title; ?></option>
+                                    <?php } ?>
+                                </select>
                             </div>
                         </div>
                         <div class="item form-group">
-                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Nomor <span class="required">*</span>
+                            <label id='label-support_standard_id' class="control-label col-md-3 col-sm-3 col-xs-12">Standard <span class="required">*</span>
                             </label>
-                            <div class="col-md-10 col-sm-10 col-xs-12">
-                                <input type="text" id="number" name="number" required="required" placeholder="Address" data-validate-minmax="10,100" class="form-control col-md-7 col-xs-12">
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <select name="support_standard_id" id="support_standard_id" class="form-control">
+                                    <option value="">Pilih Standard</option>
+                                    <?php foreach ($getStandard as $b) { ?>
+                                        <option value="<?php echo $b->support_standard_id; ?>"><?php echo $b->title; ?></option>
+                                    <?php } ?>
+                                </select>
                             </div>
                         </div>
                         <div class="item form-group">
-                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Judul <span class="required">*</span>
+                            <label id='label-support_documents_id' class="control-label col-md-3 col-sm-3 col-xs-12">Jenis Dokumen <span class="required">*</span>
                             </label>
-                            <div class="col-md-10 col-sm-10 col-xs-12">
-                                <input type="text" id="title" name="title" required="required" placeholder="Phone Number" class="form-control col-md-7 col-xs-12">
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <select name="support_documents_id" id="support_documents_id" class="form-control">
+                                    <option value="">Pilih Jenis Dokumen</option>
+                                    <?php foreach ($getKindDocument as $r) { ?>
+                                        <option value="<?php echo $r->support_documents_id; ?>"><?php echo $r->title; ?></option>
+                                    <?php } ?>
+                                </select>
                             </div>
                         </div>
                         <div class="item form-group">
-                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Link <span class="required">*</span>
+                            <label id='label-number' class="control-label col-md-3 col-sm-3 col-xs-12">Butir Ke <span class="required">*</span>
                             </label>
-                            <div class="col-md-10 col-sm-10 col-xs-12">
-                                <input type="text" id="link" name="link" required="required" placeholder="Phone Number" class="form-control col-md-7 col-xs-12">
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <input type="text" id="number" name="number" required="required" placeholder="Butir ke" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
                         <div class="item form-group">
-                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Keterangan <span class="required">*</span>
+                            <label id='label-title' class="control-label col-md-3 col-sm-3 col-xs-12">Judul <span class="required">*</span>
                             </label>
-                            <div class="col-md-10 col-sm-10 col-xs-12">
-                                <input type="text" id="remarks" name="remarks" required="required" placeholder="Phone Number" class="form-control col-md-7 col-xs-12">
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <input type="text" id="title" name="title" required="required" placeholder="Judul" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="item form-group">
+                            <label id='label-link' class="control-label col-md-3 col-sm-3 col-xs-12">Link <span class="required">*</span>
+                            </label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <input type="text" id="link" name="link" required="required" placeholder="Link" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="item form-group">
+                            <label id='label-remarks' class="control-label col-md-3 col-sm-3 col-xs-12">Keterangan <span class="required">*</span>
+                            </label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <input type="text" id="remarks" name="remarks" required="required" placeholder="Keterangan" class="form-control col-md-7 col-xs-12">
                             </div>
                         </div>
                     </div>
@@ -374,111 +554,4 @@
         </div>
     </div>
 
-    <!-- Modal User Role-->
-    <div class="modal fade" id="modalUserRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-md" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h5 class="modal-title" id="modal-title"></h5>
-                </div>
-                <form class="form-horizontal" id="add-form-role" action="" method="POST">
-                    <div class="modal-body">
-                        <input type="hidden" name='user_role_id' value="" id='user_role_id'>
-                        <div class="item form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Role <span class="required">*</span>
-                            </label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                <input type="text" id="role" name="role" placeholder="Role" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-                        <div class="item form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Description <span class="required">*</span>
-                            </label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                <input type="text" id="description" name="description" required="required" placeholder="Description" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="saveUserRole()">Save changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal User Login-->
-    <div class="modal fade" id="modalUserLogin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-md" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h5 class="modal-title" id="modal-title"></h5>
-                </div>
-                <form class="form-horizontal" id="add-form-login" action="" method="POST">
-                    <div class="modal-body">
-                        <input type="hidden" name='user_login_id' id='user_login_id'>
-                        <div class="item form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Pilih User <span class="required">*</span>
-                            </label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                <select name="userid" id="userid" class="form-control col-md-7 col-xs-12">
-                                    <option value="">Pilih Pengguna</option>
-                                    <?php foreach ($listUser as $row) { ?>
-                                        <option value="<?php echo $row->userid ?>"><?php echo $row->full_name; ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="item form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Username <span class="required">*</span>
-                            </label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                <input type="text" id="username" name="username" required="required" placeholder="Username" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-                        <div class="item form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Password <span class="required">*</span>
-                            </label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                <input type="text" id="password" name="password" required="required" placeholder="Password" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-                        <div class="item form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12"> Role Pengguna <span class="required">*</span>
-                            </label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                <select name="user_role_id" id="user_role_id" class="form-control col-md-7 col-xs-12">
-                                    <option value="">Pilih Role Pengguna</option>
-                                    <?php foreach ($listUserRole as $row) { ?>
-                                        <option value="<?php echo $row->user_role_id ?>"><?php echo $row->role; ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="item form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Status Blokir <span class="required">*</span>
-                            </label>
-                            <div class="col-md-9 col-sm-9 col-xs-12">
-                                <select name="block_status" id="block_status" class="form-control col-md-7 col-xs-12">
-                                    <option value="0">Un Blocked</option>
-                                    <option value="1"> Blocked</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="saveUserLogin()">Save changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 </div>

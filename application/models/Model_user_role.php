@@ -10,6 +10,14 @@ class Model_user_role extends CI_Model
         return $this->db->get()->result();
     }
 
+    function getDataExceptSysManager()
+    {
+        $this->db->select('*');
+        $this->db->from('user_role');
+        $this->db->where('role != "sys_manager"');
+        return $this->db->get()->result();
+    }
+
     function getAllData()
     {
         $this->datatables->select('user_role_id,role,description,create_date');

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 01, 2022 at 05:55 PM
+-- Generation Time: Aug 05, 2022 at 03:11 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.0.19
 
@@ -44,9 +44,19 @@ CREATE TABLE `accreditation_document` (
 CREATE TABLE `accreditation_members` (
   `accreditation_members_id` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
+  `user_role_id` int(11) NOT NULL,
   `level` text NOT NULL,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `accreditation_members`
+--
+
+INSERT INTO `accreditation_members` (`accreditation_members_id`, `userid`, `user_role_id`, `level`, `create_date`) VALUES
+(1, 4, 9, '', '2022-08-04 23:59:02'),
+(4, 6, 8, '', '2022-08-05 00:01:32'),
+(5, 5, 9, '', '2022-08-05 00:04:00');
 
 -- --------------------------------------------------------
 
@@ -112,6 +122,14 @@ CREATE TABLE `configuration_video` (
   `api_key` text NOT NULL,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `configuration_video`
+--
+
+INSERT INTO `configuration_video` (`configuration_video_id`, `title`, `url`, `api_key`, `create_date`) VALUES
+(1, 'Sambutan Direktur Politeknik Caltex Riau1', 'D4HdqnHSQ0o', '', '2022-08-05 01:06:34'),
+(2, 'Sambutan Dosen PCR', 'QWXLyFzcIzg', '', '2022-08-05 01:07:07');
 
 -- --------------------------------------------------------
 
@@ -542,8 +560,8 @@ CREATE TABLE `support_criteria` (
 --
 
 INSERT INTO `support_criteria` (`support_criteria_id`, `title`, `description`, `create_date`) VALUES
-(1, 'CRITERIA 1', '-', '2022-07-20 00:54:30'),
-(2, 'CRITERIA 2', '-', '2022-07-20 00:54:30');
+(1, 'Kriteria 1', '-', '2022-08-04 14:24:11'),
+(2, 'Kriteria 2', '-', '2022-08-04 14:24:17');
 
 -- --------------------------------------------------------
 
@@ -583,6 +601,13 @@ CREATE TABLE `support_master` (
   `remarks` text NOT NULL,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `support_master`
+--
+
+INSERT INTO `support_master` (`support_master_id`, `support_criteria_id`, `support_standard_id`, `support_documents_id`, `number`, `title`, `link`, `remarks`, `create_date`) VALUES
+(19, 2, 1, 2, 1, 'Test', '', 'Testing', '2022-08-04 14:56:52');
 
 -- --------------------------------------------------------
 
@@ -632,7 +657,8 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`userid`, `full_name`, `nick_name`, `initial`, `NIP`, `email`, `address`, `phone_number`, `picture`, `create_date`) VALUES
 (4, 'Fitra Arrafiq', 'Fitra', 'FAR', '20017861', 'fitraarrafiq@gmail.com', 'medan pekanbaru', '082233445566', '', '2022-07-26 22:18:55'),
 (5, 'Benget Manahan Siregar', 'Benget', 'BMS', '20088334', 'benget@globalnet.lcl', 'Serapung', '09334455666', '', '2022-07-30 04:45:48'),
-(6, 'Samsul Rizal', 'Sam', 'SRZ', '23344551', 'samsul@kerinci.lcl', 'medan', '08233445566', '', '2022-07-30 04:46:02');
+(6, 'Samsul Rizal', 'Sam', 'SRZ', '23344551', 'samsul@kerinci.lcl', 'medan', '08233445566', '', '2022-07-30 04:46:02'),
+(7, 'User', '1', 'U1', '12345', 'fitraarrafiq@gmail.com', 'Indonesia', '09334455666', '', '2022-08-04 15:09:30');
 
 -- --------------------------------------------------------
 
@@ -678,7 +704,7 @@ CREATE TABLE `user_login` (
 --
 
 INSERT INTO `user_login` (`user_login_id`, `oauth_provider`, `oauth_uid`, `userid`, `username`, `password`, `link`, `user_role_id`, `block_status`, `access_status`, `online_status`, `time_online`, `time_offline`, `create_date`) VALUES
-(4, '', '', 4, 'administrator', 'ad248d72422d9efc5bde0620401bd1d9', '', 7, '0', '', 'online', '2022-08-01 12:16:35', NULL, '2022-08-01 12:16:35'),
+(4, '', '', 4, 'administrator', 'ad248d72422d9efc5bde0620401bd1d9', '', 7, '0', '', 'online', '2022-08-04 23:28:26', NULL, '2022-08-04 23:28:26'),
 (5, '', '', 5, 'user1', 'secret', '', 8, '0', '', NULL, NULL, NULL, '2022-07-30 04:40:24');
 
 -- --------------------------------------------------------
@@ -823,13 +849,13 @@ ALTER TABLE `user_role`
 -- AUTO_INCREMENT for table `accreditation_document`
 --
 ALTER TABLE `accreditation_document`
-  MODIFY `accreditation_document_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `accreditation_document_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `accreditation_members`
 --
 ALTER TABLE `accreditation_members`
-  MODIFY `accreditation_members_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `accreditation_members_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `assessment_schedule`
@@ -853,7 +879,7 @@ ALTER TABLE `configuration_banner_picture`
 -- AUTO_INCREMENT for table `configuration_video`
 --
 ALTER TABLE `configuration_video`
-  MODIFY `configuration_video_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `configuration_video_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `menu`
@@ -895,7 +921,7 @@ ALTER TABLE `support_documents`
 -- AUTO_INCREMENT for table `support_master`
 --
 ALTER TABLE `support_master`
-  MODIFY `support_master_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `support_master_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `support_standard`
@@ -907,7 +933,7 @@ ALTER TABLE `support_standard`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `userid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `user_log`
