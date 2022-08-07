@@ -10,6 +10,69 @@
         tableLED.ajax.reload(null, false);
     }
 
+    function updateTableCriteria() {
+        tableKriteria.ajax.reload(null, false);
+    }
+
+    function updateTableStandard() {
+        tableStandard.ajax.reload(null, false);
+    }
+
+    $(document).ready(function() {
+        tableKriteria = $('#kriteria').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            "responsive": false,
+            "dataType": 'JSON',
+            "ajax": {
+                "url": "<?php echo site_url('administrator/getSupportCriteria/getAllData') ?>",
+                "type": "POST",
+                "data": {
+                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                }
+            },
+            "order": [
+                [0, "desc"]
+            ],
+            "columnDefs": [{
+                "targets": [0],
+                "className": "center"
+            }]
+        });
+    });
+
+    $(document).ready(function() {
+        tableStandard = $('#standard').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            "responsive": false,
+            "dataType": 'JSON',
+            "ajax": {
+                "url": "<?php echo site_url('administrator/getSupportStandard/getAllData') ?>",
+                "type": "POST",
+                "data": {
+                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                }
+            },
+            "order": [
+                [0, "desc"]
+            ],
+            "columnDefs": [{
+                "targets": [0],
+                "className": "center"
+            }]
+        });
+    });
+
+
     $(document).ready(function() {
         table = $('#lkpsDoc').DataTable({
             "processing": true,
@@ -131,11 +194,27 @@
     }
 
     var save_method;
-
+    var save_method_criteria;
+    var save_method_standard;
 
     // Start Method add
     function add() {
         save_method = 'add';
+        $('#label-support_criteria_id').show();
+        $('#label-support_standard_id').show();
+        $('#label-support_documents_id').show();
+        $('#label-number').show();
+        $('#label-link').hide();
+        $('#label-title').show();
+        $('#label-remarks').show();
+
+        $('#support_criteria_id').show();
+        $('#support_standard_id').show();
+        $('#support_documents_id').show();
+        $('#number').show();
+        $('#link').hide();
+        $('#title').show();
+        $('#remarks').show();
         $('.modal-title').text(' Add Data Support Documents');
         $('.reset-btn').show();
         $('.form-group')
@@ -147,9 +226,58 @@
         $("#form-doc")[0].reset();
         $('#label-link').hide();
         $('#link').hide();
-
     }
 
+    // Start Method add
+    function addStandard() {
+        $('.modal-title').text(' Data Standard dan Kriteria');
+        $('.reset-btn').show();
+        $('.form-group')
+            .removeClass('has-error')
+            .removeClass('has-success')
+            .find('#text-error')
+            .remove();
+        $('#modalKriteriaStandard').modal({
+            backdrop: 'static',
+            keyboard: false,
+        });
+
+        $('#modalKriteriaStandard').modal('show');
+    }
+
+    function addDataStandard() {
+        $('.modal-title').text(' Data Standard dan Kriteria');
+        $('.reset-btn').show();
+        $('.form-group')
+            .removeClass('has-error')
+            .removeClass('has-success')
+            .find('#text-error')
+            .remove();
+        $('#modalStandard').modal({
+            backdrop: 'static',
+            keyboard: false,
+        });
+        $("#form-standard")[0].reset();
+
+        $('#modalStandard').modal('show');
+    }
+
+    function addDataCriteria() {
+        $('.modal-title').text(' Data Standard dan Kriteria');
+        $('.reset-btn').show();
+        $('.form-group')
+            .removeClass('has-error')
+            .removeClass('has-success')
+            .find('#text-error')
+            .remove();
+        $('#modalKriteria').modal({
+            backdrop: 'static',
+            keyboard: false,
+        });
+        $("#form-criteria")[0].reset();
+
+        $('#modalKriteria').modal('show');
+    }
     // End method add
 
     // Start Method Update
@@ -240,6 +368,52 @@
         });
     }
 
+    function updateCriteria(id) {
+        save_method_criteria = 'update';
+
+        //Load data dari ajax
+        $.ajax({
+            url: "<?php echo base_url('administrator/getSupportCriteria/getById/'); ?>/" + id,
+            type: "GET",
+            dataType: "JSON",
+            success: function(resp) {
+
+                data = resp.data
+                $('[name="support_criteria_id"]').val(data.support_criteria_id);
+                $('[name="title"]').val(data.title);
+                $('[name="description"]').val(data.description);
+                $('#modalKriteria').modal('show');
+                $('.modal-title').text('Edit Data');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error Get Data From Ajax');
+            }
+        });
+    }
+
+    function updateStandard(id) {
+        save_method_standard = 'update';
+
+        //Load data dari ajax
+        $.ajax({
+            url: "<?php echo base_url('administrator/getSupportStandard/getById/'); ?>/" + id,
+            type: "GET",
+            dataType: "JSON",
+            success: function(resp) {
+
+                data = resp.data
+                $('[name="support_standard_id"]').val(data.support_standard_id);
+                $('[name="title"]').val(data.title);
+                $('[name="remarks"]').val(data.remarks);
+                $('#modalStandard').modal('show');
+                $('.modal-title').text('Edit Data');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error Get Data From Ajax');
+            }
+        });
+    }
+
     // End Method Update
 
     // Start Method delete
@@ -264,6 +438,92 @@
                         data = resp.result
                         updateTableLKPS();
                         updateTableLED();
+                        return swal({
+                            content: true,
+                            timer: 1300,
+                            title: data['msg'],
+                            icon: 'success'
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error Deleting Data');
+                    }
+                });
+            } else {
+                return swal({
+                    content: true,
+                    title: 'Transaksi telah dibatalkan !',
+                    timer: 1300,
+                    icon: 'error'
+                });
+            }
+        });
+
+    }
+
+    function deleteCriteria(id) {
+        swal({
+            title: "Apakah Yakin Akan Dihapus?",
+            icon: "warning",
+            buttons: {
+                cancel: true,
+                confirm: true,
+            },
+        }).then((result) => {
+            if (result == true) {
+                $.ajax({
+                    url: "<?php echo site_url('administrator/getSupportCriteria/delete'); ?>/" + id,
+                    type: "POST",
+                    data: {
+                        '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                    },
+                    dataType: "JSON",
+                    success: function(resp) {
+                        data = resp.result
+                        updateTableCriteria();
+                        return swal({
+                            content: true,
+                            timer: 1300,
+                            title: data['msg'],
+                            icon: 'success'
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error Deleting Data');
+                    }
+                });
+            } else {
+                return swal({
+                    content: true,
+                    title: 'Transaksi telah dibatalkan !',
+                    timer: 1300,
+                    icon: 'error'
+                });
+            }
+        });
+
+    }
+
+    function deleteStandard(id) {
+        swal({
+            title: "Apakah Yakin Akan Dihapus?",
+            icon: "warning",
+            buttons: {
+                cancel: true,
+                confirm: true,
+            },
+        }).then((result) => {
+            if (result == true) {
+                $.ajax({
+                    url: "<?php echo site_url('administrator/getSupportStandard/delete'); ?>/" + id,
+                    type: "POST",
+                    data: {
+                        '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
+                    },
+                    dataType: "JSON",
+                    success: function(resp) {
+                        data = resp.result
+                        updateTableStandard();
                         return swal({
                             content: true,
                             timer: 1300,
@@ -365,6 +625,152 @@
             }
         });
     }
+
+    function saveCriteria() {
+        var url;
+        if (save_method_criteria == 'add') {
+            url = '<?php echo base_url() ?>administrator/getSupportCriteria/insert';
+        } else {
+            url = '<?php echo base_url() ?>administrator/getSupportCriteria/update';
+        }
+        swal({
+            title: "Apakah anda sudah yakin ?",
+            icon: "warning",
+            buttons: {
+                cancel: true,
+                confirm: true,
+            },
+        }).then((result) => {
+            if (result == true) {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: $('#form-criteria').serialize(),
+                    dataType: "JSON",
+                    success: function(resp) {
+                        data = resp.result;
+                        // csrf_hash = resp.csrf['token']
+                        // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
+                        if (data['status'] == 'success') {
+                            updateTableCriteria();
+                            $('.form-group')
+                                .removeClass('has-error')
+                                .removeClass('has-success')
+                                .find('#text-error')
+                                .remove();
+                            $('#modalKriteria').modal('hide');
+                            $("#form-criteria")[0].reset();
+
+                        } else {
+                            $.each(data['messages'], function(key, value) {
+                                var element = $('#' + key);
+                                element
+                                    .closest('div.form-group')
+                                    .removeClass('has-error')
+                                    .addClass(
+                                        value.length > 0 ?
+                                        'has-error' :
+                                        'has-success'
+                                    )
+                                    .find('#text-error')
+                                    .remove();
+                                element.after(value);
+                            });
+                        }
+                        return swal({
+                            content: true,
+                            timer: 1300,
+                            title: data['msg'],
+                            icon: data['status']
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error adding/updating data');
+                    }
+                });
+            } else {
+                return swal({
+                    title: 'Transaksi telah dibatalkan !',
+                    content: true,
+                    timer: 1300,
+                    icon: 'error'
+                });
+            }
+        });
+    }
+
+    function saveStandard() {
+        var url;
+        if (save_method_standard == 'add') {
+            url = '<?php echo base_url() ?>administrator/getSupportStandard/insert';
+        } else {
+            url = '<?php echo base_url() ?>administrator/getSupportStandard/update';
+        }
+        swal({
+            title: "Apakah anda sudah yakin ?",
+            icon: "warning",
+            buttons: {
+                cancel: true,
+                confirm: true,
+            },
+        }).then((result) => {
+            if (result == true) {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: $('#form-standard').serialize(),
+                    dataType: "JSON",
+                    success: function(resp) {
+                        data = resp.result;
+                        // csrf_hash = resp.csrf['token']
+                        // $('#add-form input[name=' + csrf_name + ']').val(csrf_hash);
+                        if (data['status'] == 'success') {
+                            updateTableStandard();
+                            $('.form-group')
+                                .removeClass('has-error')
+                                .removeClass('has-success')
+                                .find('#text-error')
+                                .remove();
+                            $('#modalStandard').modal('hide');
+                            $("#form-standard")[0].reset();
+
+                        } else {
+                            $.each(data['messages'], function(key, value) {
+                                var element = $('#' + key);
+                                element
+                                    .closest('div.form-group')
+                                    .removeClass('has-error')
+                                    .addClass(
+                                        value.length > 0 ?
+                                        'has-error' :
+                                        'has-success'
+                                    )
+                                    .find('#text-error')
+                                    .remove();
+                                element.after(value);
+                            });
+                        }
+                        return swal({
+                            content: true,
+                            timer: 1300,
+                            title: data['msg'],
+                            icon: data['status']
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error adding/updating data');
+                    }
+                });
+            } else {
+                return swal({
+                    title: 'Transaksi telah dibatalkan !',
+                    content: true,
+                    timer: 1300,
+                    icon: 'error'
+                });
+            }
+        });
+    }
 </script>
 
 <div class="page-title">
@@ -382,7 +788,9 @@
             <div class="x_title">
                 <h4><i class="fa fa-bars"></i> Dokumen Pendukung <small>System</small></h4>
                 <div class="clearfix"></div>
-                <button class="btn btn-success btn-xs" onclick="add()" type="button"><i class="fa fa-plus"></i> Add Data</button>
+                <button class="btn btn-warning btn-xs" onclick="menu('supportDocuments')" type="button"><i class="fa fa-recycle"></i> Refresh Page</button>
+                <button class="btn btn-success btn-xs" onclick="add()" type="button"><i class="fa fa-plus"></i> Tambah Data Pendukung</button>
+                <button class="btn btn-danger btn-xs" onclick="addStandard()" type="button"><i class="fa fa-plus"></i> Data Standard dan Kriteria</button>
             </div>
             <div class="x_content">
                 <div class="" role="tabpanel" data-example-id="togglable-tabs">
@@ -466,6 +874,59 @@
         </div>
     </div>
 
+    <!-- Modal Standard-->
+    <div class="modal fade" id="modalKriteriaStandard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="modal-title" id="modal-title"></h5>
+                    <div class="col-md-6">
+                        <div class="x_title">
+                            <h4>Management Standard</h4>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <button class="btn btn-info btn-xs" onclick="addDataStandard()" type="button"><i class="fa fa-plus"></i> Tambah Data Standard</button>
+
+                            <table id="standard" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Judul</th>
+                                        <th>Keterangan</th>
+                                        <th>Tools</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="x_title">
+                            <h4>Management Kriteria</h4>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <button class="btn btn-warning btn-xs" onclick="addDataCriteria()" type="button"><i class="fa fa-plus"></i> Tambah Data Kriteria</button>
+
+                            <table id="kriteria" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Judul</th>
+                                        <th>Keterangan</th>
+                                        <th>Tools</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal User Role-->
     <div class="modal fade" id="modalDoc" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -553,5 +1014,81 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal User Role-->
+    <div class="modal fade" id="modalStandard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="modal-title" id="modal-title"></h5>
+                </div>
+                <form class="form-horizontal" id="form-standard" action="" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" name='support_standard_id' value="" id='support_standard_id'>
+                        <div class="item form-group">
+                            <label id="label-support_criteria_id" class="control-label col-md-3 col-sm-3 col-xs-12">Kriteria <span class="required">*</span>
+                            </label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <input type="text" id="title" name="title" required="required" placeholder="Judul" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="item form-group">
+                            <label id='label-support_documents_id' class="control-label col-md-3 col-sm-3 col-xs-12">Jenis Dokumen <span class="required">*</span>
+                            </label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <input type="text" id="remarks" name="remarks" required="required" placeholder="Keterangan" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="saveStandard()">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal User Role-->
+    <div class="modal fade" id="modalKriteria" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="modal-title" id="modal-title"></h5>
+                </div>
+                <form class="form-horizontal" id="form-criteria" action="" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" name='support_criteria_id' value="" id='support_criteria_id'>
+                        <div class="item form-group">
+                            <label id="label-support_criteria_id" class="control-label col-md-3 col-sm-3 col-xs-12">Kriteria <span class="required">*</span>
+                            </label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <input type="text" id="title" name="title" required="required" placeholder="Judul" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="item form-group">
+                            <label id='label-support_documents_id' class="control-label col-md-3 col-sm-3 col-xs-12">Keterangan <span class="required">*</span>
+                            </label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <input type="text" id="description" name="description" required="required" placeholder="Keterangan" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="saveCriteria()">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 
 </div>

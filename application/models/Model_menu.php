@@ -9,6 +9,7 @@ class Model_menu extends CI_Model
         $this->db->from('menu a');
         $this->db->join('menu_logo b', 'b.menu_logo_id = a.menu_logo_id', 'left');
         $this->db->order_by('menu_hierarki', 'asc');
+        $this->db->where('a.user_role_id', $this->session->userdata('user_role_id'));
         return $this->db->get()->result();
     }
 }

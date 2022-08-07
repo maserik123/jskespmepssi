@@ -43,6 +43,7 @@ class Auth extends CI_Controller
                     $sess_data['email']           = $qad->email;
                     $sess_data['picture']         = $qad->picture;
                     $sess_data['role']            = $qad->role;
+                    $sess_data['user_role_id']    = $qad->user_role_id;
                     $sess_data['online_status']   = $qad->online_status;
                     $sess_data['block_status']    = $qad->block_status;
                     $this->session->set_userdata($sess_data);

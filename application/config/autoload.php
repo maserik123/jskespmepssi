@@ -151,5 +151,6 @@ $autoload['model'] = array(
     'Model_support_master',
     'Model_support_standard',
     'Model_accreditation_members',
-    'Model_configuration_video'
+    'Model_configuration_video',
+
 );

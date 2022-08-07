@@ -23,6 +23,7 @@ class Model_user_login extends CI_Model
         b.address,
         b.phone_number,
         a.username,
+        a.user_role_id,
         c.role,
         a.block_status,
         a.create_date');
@@ -73,6 +74,7 @@ class Model_user_login extends CI_Model
         a.access_status,
         b.picture,
         c.role,
+        c.user_role_id,
         a.online_status
         ');
         $this->db->from('user_login a');

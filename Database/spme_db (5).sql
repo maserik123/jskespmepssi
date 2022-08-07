@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 05, 2022 at 03:11 AM
+-- Generation Time: Aug 07, 2022 at 04:54 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.0.19
 
@@ -34,6 +34,13 @@ CREATE TABLE `accreditation_document` (
   `remarks` text NOT NULL,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `accreditation_document`
+--
+
+INSERT INTO `accreditation_document` (`accreditation_document_id`, `title`, `link`, `remarks`, `create_date`) VALUES
+(3, 'tes', 'https://www.pcr.ac.id', 'Testing saja', '2022-08-05 23:52:40');
 
 -- --------------------------------------------------------
 
@@ -128,7 +135,7 @@ CREATE TABLE `configuration_video` (
 --
 
 INSERT INTO `configuration_video` (`configuration_video_id`, `title`, `url`, `api_key`, `create_date`) VALUES
-(1, 'Sambutan Direktur Politeknik Caltex Riau1', 'D4HdqnHSQ0o', '', '2022-08-05 01:06:34'),
+(1, 'Sambutan Direktur Politeknik Caltex Riau', 'D4HdqnHSQ0o', '', '2022-08-05 23:26:47'),
 (2, 'Sambutan Dosen PCR', 'QWXLyFzcIzg', '', '2022-08-05 01:07:07');
 
 -- --------------------------------------------------------
@@ -145,6 +152,7 @@ CREATE TABLE `menu` (
   `menu_description` text NOT NULL,
   `menu_hierarki` int(15) NOT NULL,
   `user_id` int(15) NOT NULL,
+  `user_role_id` int(11) NOT NULL,
   `create_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -152,13 +160,25 @@ CREATE TABLE `menu` (
 -- Dumping data for table `menu`
 --
 
-INSERT INTO `menu` (`menu_id`, `menu_title`, `controller_name`, `menu_logo_id`, `menu_description`, `menu_hierarki`, `user_id`, `create_date`) VALUES
-(1, 'Konfigurasi', 'configuration', '1', 'Menu akreditasi digunakan untuk merecord data akreditasi pada website SPME', 2, 1, '2022-07-23 10:36:27'),
-(2, 'Manajemen Pengguna', 'user', '2', 'Menu users digunakan untuk mengedit data pengguna', 3, 1, '2022-07-23 10:36:29'),
-(3, 'Penjadwalan Asesmen', 'assessment', '3', 'Menu assessment untuk melakukan penjadwalan asesment', 4, 1, '2022-07-23 15:08:56'),
-(5, 'Dokumen Akreditasi', 'accreditation', '4', '-', 5, 3, '2022-07-24 23:45:33'),
-(6, 'Dokumen Pendukung', 'supportDocuments', '6', 'Untuk menampung dokumen pendukung 3A dan 3B', 6, 1, '2022-07-24 23:55:16'),
-(7, 'Tim Akreditasi', 'accreditationTeam', '7', 'Untuk menampung data tim akreditasi', 7, 1, '2022-07-24 22:02:10');
+INSERT INTO `menu` (`menu_id`, `menu_title`, `controller_name`, `menu_logo_id`, `menu_description`, `menu_hierarki`, `user_id`, `user_role_id`, `create_date`) VALUES
+(1, 'Konfigurasi', 'configuration', '1', 'Menu akreditasi digunakan untuk merecord data akreditasi pada website SPME', 2, 1, 7, '2022-08-07 14:44:23'),
+(2, 'Manajemen Pengguna', 'user', '2', 'Menu users digunakan untuk mengedit data pengguna', 3, 1, 7, '2022-08-07 14:44:25'),
+(3, 'Penjadwalan Asesmen', 'assessment', '3', 'Menu assessment untuk melakukan penjadwalan asesment', 4, 1, 8, '2022-08-07 14:42:54'),
+(5, 'Dokumen Akreditasi', 'accreditation', '4', '-', 5, 3, 8, '2022-08-07 14:42:57'),
+(6, 'Dokumen Pendukung', 'supportDocuments', '6', 'Untuk menampung dokumen pendukung 3A dan 3B', 6, 1, 8, '2022-08-07 14:43:01'),
+(7, 'Tim Akreditasi', 'accreditationTeam', '7', 'Untuk menampung data tim akreditasi', 7, 1, 8, '2022-08-07 14:43:05'),
+(8, 'Penjadwalan Asesmen', 'assessment', '3', 'Menu assessment untuk melakukan penjadwalan asesment', 4, 1, 9, '2022-08-07 14:43:11'),
+(9, 'Dokumen Akreditasi', 'accreditation', '4', '-', 5, 3, 9, '2022-08-07 14:43:14'),
+(10, 'Dokumen Pendukung', 'supportDocuments', '6', 'Untuk menampung dokumen pendukung 3A dan 3B', 6, 1, 9, '2022-08-07 14:43:17'),
+(11, 'Tim Akreditasi', 'accreditationTeam', '7', 'Untuk menampung data tim akreditasi', 7, 1, 9, '2022-08-07 14:43:20'),
+(12, 'Penjadwalan Asesmen', 'assessment', '3', 'Menu assessment untuk melakukan penjadwalan asesment', 4, 1, 10, '2022-08-07 14:43:43'),
+(13, 'Dokumen Akreditasi', 'accreditation', '4', '-', 5, 3, 10, '2022-08-07 14:43:48'),
+(14, 'Dokumen Pendukung', 'supportDocuments', '6', 'Untuk menampung dokumen pendukung 3A dan 3B', 6, 1, 10, '2022-08-07 14:43:53'),
+(15, 'Tim Akreditasi', 'accreditationTeam', '7', 'Untuk menampung data tim akreditasi', 7, 1, 10, '2022-08-07 14:43:59'),
+(16, 'Penjadwalan Asesmen', 'assessment', '3', 'Menu assessment untuk melakukan penjadwalan asesment', 4, 1, 7, '2022-08-07 14:44:33'),
+(17, 'Dokumen Akreditasi', 'accreditation', '4', '-', 5, 3, 7, '2022-08-07 14:44:36'),
+(18, 'Dokumen Pendukung', 'supportDocuments', '6', 'Untuk menampung dokumen pendukung 3A dan 3B', 6, 1, 7, '2022-08-07 14:44:39'),
+(19, 'Tim Akreditasi', 'accreditationTeam', '7', 'Untuk menampung data tim akreditasi', 7, 1, 7, '2022-08-07 14:44:42');
 
 -- --------------------------------------------------------
 
@@ -658,7 +678,7 @@ INSERT INTO `user` (`userid`, `full_name`, `nick_name`, `initial`, `NIP`, `email
 (4, 'Fitra Arrafiq', 'Fitra', 'FAR', '20017861', 'fitraarrafiq@gmail.com', 'medan pekanbaru', '082233445566', '', '2022-07-26 22:18:55'),
 (5, 'Benget Manahan Siregar', 'Benget', 'BMS', '20088334', 'benget@globalnet.lcl', 'Serapung', '09334455666', '', '2022-07-30 04:45:48'),
 (6, 'Samsul Rizal', 'Sam', 'SRZ', '23344551', 'samsul@kerinci.lcl', 'medan', '08233445566', '', '2022-07-30 04:46:02'),
-(7, 'User', '1', 'U1', '12345', 'fitraarrafiq@gmail.com', 'Indonesia', '09334455666', '', '2022-08-04 15:09:30');
+(7, 'User1', 'user satu', 'U1', '12345', 'fitraarrafiq@gmail.com', 'Indonesia', '09334455666', '', '2022-08-05 23:57:06');
 
 -- --------------------------------------------------------
 
@@ -704,8 +724,9 @@ CREATE TABLE `user_login` (
 --
 
 INSERT INTO `user_login` (`user_login_id`, `oauth_provider`, `oauth_uid`, `userid`, `username`, `password`, `link`, `user_role_id`, `block_status`, `access_status`, `online_status`, `time_online`, `time_offline`, `create_date`) VALUES
-(4, '', '', 4, 'administrator', 'ad248d72422d9efc5bde0620401bd1d9', '', 7, '0', '', 'online', '2022-08-04 23:28:26', NULL, '2022-08-04 23:28:26'),
-(5, '', '', 5, 'user1', 'secret', '', 8, '0', '', NULL, NULL, NULL, '2022-07-30 04:40:24');
+(4, '', '', 4, 'administrator', 'ad248d72422d9efc5bde0620401bd1d9', '', 7, '0', '', 'online', '2022-08-07 14:54:19', NULL, '2022-08-07 14:54:19'),
+(5, '', '', 5, 'user1', 'secret', '', 8, '0', '', NULL, NULL, NULL, '2022-07-30 04:40:24'),
+(6, '', '', 6, 'samsul123', 'b5146ab5c012993e868d0f7f3ab2c092', '', 9, '0', '', 'online', '2022-08-05 23:57:54', NULL, '2022-08-05 23:57:54');
 
 -- --------------------------------------------------------
 
@@ -727,7 +748,8 @@ CREATE TABLE `user_role` (
 INSERT INTO `user_role` (`user_role_id`, `role`, `description`, `create_date`) VALUES
 (7, 'sys_manager', 'System Manager', '2022-07-24 11:26:40'),
 (8, 'Kaprodi', 'Kaprodi bertugas memimpin program study', '2022-07-26 22:15:32'),
-(9, 'Dosen', 'Dosen Bertugas sebagai tenaga pengajar', '2022-07-30 04:35:05');
+(9, 'Dosen', 'Dosen Bertugas sebagai tenaga pengajar', '2022-07-30 04:35:05'),
+(10, 'BP3M', 'BP3M merupakan bagian dari PCR', '2022-08-05 23:56:13');
 
 --
 -- Indexes for dumped tables
@@ -849,7 +871,7 @@ ALTER TABLE `user_role`
 -- AUTO_INCREMENT for table `accreditation_document`
 --
 ALTER TABLE `accreditation_document`
-  MODIFY `accreditation_document_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `accreditation_document_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `accreditation_members`
@@ -885,7 +907,7 @@ ALTER TABLE `configuration_video`
 -- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `menu_logo`
@@ -909,7 +931,7 @@ ALTER TABLE `program_study_lecturer`
 -- AUTO_INCREMENT for table `support_criteria`
 --
 ALTER TABLE `support_criteria`
-  MODIFY `support_criteria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `support_criteria_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `support_documents`
@@ -927,7 +949,7 @@ ALTER TABLE `support_master`
 -- AUTO_INCREMENT for table `support_standard`
 --
 ALTER TABLE `support_standard`
-  MODIFY `support_standard_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `support_standard_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `user`
@@ -945,13 +967,13 @@ ALTER TABLE `user_log`
 -- AUTO_INCREMENT for table `user_login`
 --
 ALTER TABLE `user_login`
-  MODIFY `user_login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `user_role`
 --
 ALTER TABLE `user_role`
-  MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `user_role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
